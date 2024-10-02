@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "alumniconnect-8d163",
+  "private_key_id": "03c204897b95c3feabf60df54747d9669d3eea3e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbIblJ08YGOpnc\nfsVhFWutKmkEXDkEL9xd53cqeBtX4O9sLD7hkDbA5x3bOugCLartr+33pCRCrmbd\nJ1DYQ1PNL3ThF8N57eY7VY4jEgVHGQtFzwagqCbZ/Vqu0ozFnlZR+rzMY60xFWhp\nJGtNeScD/xnQFIj+/ZEwcTHv6inW8+iSHygIps+WVw0Rjxik1xLBh4Eonagntyfk\n9oxET2stD9y7Rnc4Fs5iWYVbAwsUINejiqQSXRvpiottXH4WHBbFuPfmc4viq+Sk\nzDF9xm2TWAR8R26PMpk6ATEa8WRVIVlcqP51EH6A+7ESlleltAiFKCyabukpT66g\nsOameJ9vAgMBAAECggEABzLEZ0GVYbqcYxfazstwqKNcJiClYKVb41uXMvhJxIUi\ndvGCpXLMp5zRzNdp5pf543eTYjdSm2l+SmrFnJNbMx0tnjg9EM5SLZSluMjgR9FI\nrZ+SnifPTbQs3gnVEGJtfPZWhmFlqu5kXuSaugiSH+RZbUdWqAZaE1ZdS9WgxWGP\nchDKnF+gIc8tOz80AJ8poJ0pD4mfxdWSFfSukvuqByvHq2z1jTbFOBGkssPhMZrs\nkRc7QhekrJFYJejaQcgVlbQqYuHyS6EZmxxphd/qxn5RqhK0Z32sRhtenfvgpuXE\nU2+2yCrXoBYNxc9Eui733LFXjKqMFdb/x/HIg4B0KQKBgQDVr5qqk0lNnKKmnQjx\nWmzTOZNCRb+y6aJdrgkZowLaANiqDYONvjX9kKYOgDbUBuMQ1SAm8lQq1uXtid8m\nI3cogbk7iq+yf1zqw62HMbBJN3bfDV36ZZhK17wnSHqKte4Y0Z4tie1VHfeW7JoM\n9mt25lNVY/w/DhFxJiIl6ruldQKBgQC52dOmMGZN6e++5UreJooMXeFqhLFmLWJU\nOudXjSjJ13Wsz4zIzG83c5ihKgyeTaGaW0VVs0dszcepJdNdSDq+zelV52V3GRwx\nrMGsi8aeY7NWZQgOXnaMXGgqdI8KjRDNcrXF5on3Y2E4YartCQxKQw4Qil6766w3\nAFxfempA0wKBgFpUeVVSHdKpPDiieX1NdGN2G0IQqhC/ottnDoG/3xy47t40CECK\n/9fIpenLWWIX5zTeY1ETb3EMlvXrKmG87Eo7TEpXPh5+qJC1V02nO5Y31BBGXkvT\nVqWMvQT+Jo8siRIEypEFlUY9/MPYEOcZ5CPHCcM3GRKup8DlFdpheCFhAoGBAJwE\noinsjaWw0qP1x1ERF2jkUvzh4i79wIMnY9ha1zgCmXX2UqCrBl6Nuz7oluk6EIUN\nQ/p642YSph94cqTnovFU2SJVfBdsS//joD7ipF2JIx9O92FgqbKRTJz/dqmL3OQr\n/S7ip0W39wCm9R/CLcAV5LO8BWVKpisSMXmxwYsjAoGAPcdzNfWriu8xg9m/QI4c\npTMX795LBgEEseSfzVGZpBeQq7dp1iWdLSb6zx2BSEWjQICsBzBFZ7sj9+9h+7Yr\nEvS1LJ120B5zPO8zLF7lvja4FS05O7EoAorkm3dMPwr0ycW+2ni8PpIL2FkrB0dL\nJj7IojqZbeC8sIuf4zjRLrM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-tinsa@alumniconnect-8d163.iam.gserviceaccount.com",
+  "client_id": "110784619745515647644",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-tinsa%40alumniconnect-8d163.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

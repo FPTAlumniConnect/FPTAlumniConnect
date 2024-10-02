@@ -11,9 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Constants\" />
     <Folder Include="Enums\" />
-    <Folder Include="Payload\" />
   </ItemGroup>
 
 </Project>

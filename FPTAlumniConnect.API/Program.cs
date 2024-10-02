@@ -1,8 +1,34 @@
+using FPTAlumniConnect.API.Extensions;
+using FPTAlumniConnect.API.Middlewares;
+using FPTAlumniConnect.BusinessTier.Constants;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CorsConstant.PolicyName,
+        policy =>
+        {
+            policy.WithOrigins("*")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    x.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
+});
 
-builder.Services.AddControllers();
+builder.Services.AddDatabase(builder);
+builder.Services.AddUnitOfWork();
+builder.Services.AddServices();
+builder.Services.AddJwtValidation();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -14,8 +40,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
 }
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseCors(CorsConstant.PolicyName);
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
