@@ -15,12 +15,12 @@ namespace FPTAlumniConnect.API.Controllers
             _userService = userService;
         }
 
-        //[HttpPost(ApiEndPointConstant.User.UserLoginEndPoint)]
-        //[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> LoginUser(LoginFirebaseRequest request)
-        //{
-        //    var response = await _userService.LoginUser(request);
-        //    return Ok(response);
-        //}
+        [HttpPost(ApiEndPointConstant.User.UserLoginEndPoint)]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> LoginUser(LoginFirebaseRequest request)
+        {
+            var response = await _userService.LoginUser(request);
+            return Ok(response);
+        }
     }
 }
