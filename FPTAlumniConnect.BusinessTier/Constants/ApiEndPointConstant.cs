@@ -24,5 +24,10 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string UserEndPoint = UsersEndPoint + "/{id}";
             public const string UserLoginEndPoint = UsersEndPoint + "/login";
         }
+        public static class EducationHistory
+        {
+            public const string EducationHistoryEndPoint = "education-history/{id}";
+            public const string EducationHistoriesEndPoint = "education-histories";
+        }
     }
 }
