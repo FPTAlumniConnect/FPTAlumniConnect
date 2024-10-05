@@ -26,7 +26,7 @@ namespace FPTAlumniConnect.BusinessTier.Utils
         {
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Sub,user.Email),
-            //new Claim(ClaimTypes.Role,user.Role),
+            new Claim(ClaimTypes.Role, user.Role?.Name ?? string.Empty)
         };
             var expires = DateTime.Now.AddDays(1);
             var token = new JwtSecurityToken(issuer, null, claims, notBefore: DateTime.Now, expires, credentials);
