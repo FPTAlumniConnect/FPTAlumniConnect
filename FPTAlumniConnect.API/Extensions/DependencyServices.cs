@@ -47,6 +47,8 @@ namespace FPTAlumniConnect.API.Extensions
             
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<IUserService, UserService> ();
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IPostReportService, PostReportService>();
             return services;
         }
 
