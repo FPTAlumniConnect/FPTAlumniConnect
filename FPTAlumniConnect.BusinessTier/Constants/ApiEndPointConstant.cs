@@ -24,5 +24,10 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string UserEndPoint = UsersEndPoint + "/{id}";
             public const string UserLoginEndPoint = UsersEndPoint + "/login";
         }
+        public static class Post
+        {
+            public const string PostsEndPoint = ApiEndpoint + "/posts";
+            public const string PostEndPoint = PostsEndPoint + "/{id}";
+        }
     }
 }
