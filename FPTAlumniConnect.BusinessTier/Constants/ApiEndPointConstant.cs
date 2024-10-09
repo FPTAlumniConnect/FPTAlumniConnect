@@ -34,5 +34,10 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string PostReportsEndPoint = ApiEndpoint + "/reports";
             public const string PostReportEndPoint = PostReportsEndPoint + "/{id}";
         }
+        public static class Comment
+        {
+            public const string CommentsEndPoint = ApiEndpoint + "/comments";
+            public const string CommentEndPoint = CommentsEndPoint + "/{id}";
+        }
     }
 }
