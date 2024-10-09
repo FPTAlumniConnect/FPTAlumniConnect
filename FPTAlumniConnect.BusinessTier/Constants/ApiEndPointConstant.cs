@@ -50,5 +50,20 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string UserJoinEventEndPoint = UserJoinEventsEndPoint + "/{id}";
             public const string ViewAllUserJoinEventsEndPoint = UserJoinEventsEndPoint + "/view-all";
         }
+        public static class EducationHistory
+        {
+            public const string EducationHistoryEndPoint = "education-history/{id}";
+            public const string EducationHistoriesEndPoint = "education-histories";
+        }
+        public static class PrivacySetting
+        {
+            public const string PrivacySettingEndPoint = "privacy-setting/{id}";
+            public const string PrivacySettingsEndPoint = "privacy-settings";
+        }
+        public static class NotificationSetting
+        {
+            public const string NotificationSettingEndPoint = "notification-setting/{id}";
+            public const string NotificationSettingsEndPoint = "notification-settings";
+        }
     }
 }
