@@ -50,45 +50,43 @@ namespace FPTAlumniConnect.API.Services.Implements
         }
 
 
-        //public async Task<LoginResponse> LoginUser(LoginFirebaseRequest request)
-        //{
-        //    var cred = await _firebaseService.VerifyIdToken(request.Token);
-        //    if (cred == null) throw new BadHttpRequestException("Firebase token không hợp lệ");
-        //    var firebaseClaims = cred.Claims;
+        public async Task<LoginResponse> LoginUser(LoginFirebaseRequest request)
+        {
+            var cred = await _firebaseService.VerifyIdToken(request.Token);
+            if (cred == null) throw new BadHttpRequestException("Firebase token không hợp lệ");
+            var firebaseClaims = cred.Claims;
 
-        //    var email = firebaseClaims.FirstOrDefault(c => c.Key == "email").Value.ToString();
-        //    var uid = firebaseClaims.FirstOrDefault(c => c.Key == "user_id").Value.ToString();
+            var email = firebaseClaims.FirstOrDefault(c => c.Key == "email").Value.ToString();
+            var uid = firebaseClaims.FirstOrDefault(c => c.Key == "user_id").Value.ToString();
 
-        //    User userLogin = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
-        //        predicate: x => x.Email.Equals(email)
-        //        );
+            User userLogin = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+                predicate: x => x.Email.Equals(email)
+                );
 
-        //    string accessToken;
-        //    if (userLogin != null)
-        //    {
-        //        userLogin.GoogleId = uid;
-        //        _unitOfWork.GetRepository<User>().UpdateAsync(userLogin);
-        //        accessToken = JwtUtil.GenerateJwtToken(userLogin);
-        //        await _unitOfWork.CommitAsync();
-        //    }
-        //    else throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
+            string accessToken;
+            if (userLogin != null)
+            {
+                userLogin.GoogleId = uid;
+                _unitOfWork.GetRepository<User>().UpdateAsync(userLogin);
+                accessToken = JwtUtil.GenerateJwtToken(userLogin);
+                await _unitOfWork.CommitAsync();
+            }
+            else throw new BadHttpRequestException("UserNotFound");
 
-        //    return new LoginResponse
-        //    {
-        //        Message = "Login success",
-        //        AccessToken = accessToken,
-        //        UserInfo = new UserResponse()
-        //        {
-        //            Id = userLogin.Id,
-        //            FullName = userLogin.FullName,
-        //            PhoneNumber = userLogin.PhoneNumber,
-        //            Email = userLogin.Email,
-        //            Address = userLogin.Address,
-        //            Status = EnumUtil.ParseEnum<UserStatus>(userLogin.Status),
-        //            FirebaseUid = userLogin.FirebaseUid,
-        //        }
-        //    };
-        //}
+            return new LoginResponse
+            {
+                Message = "Login success",
+                AccessToken = accessToken,
+                UserInfo = new UserResponse()
+                {
+                    UserId = userLogin.UserId,
+                    FirstName=userLogin.FirstName,
+                    LastName=userLogin.LastName,
+                    Email=userLogin.Email,
+                    GoogleId = userLogin.GoogleId,
+                }
+            };
+        }
 
         public async Task<bool> UpdateUserInfo(int id, UserInfo request)
         {
