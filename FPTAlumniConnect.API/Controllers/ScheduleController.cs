@@ -41,8 +41,8 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpPatch(ApiEndPointConstant.Schedule.ScheduleEndPoint)]
-        [ProducesResponseType(typeof(ScheduleReponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateScheduleInfo(int id, ScheduleInfo request)
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateScheduleInfo(int id, [FromBody] ScheduleInfo request)
         {
             var isSuccessful = await _scheduleService.UpdateScheduleInfo(id, request);
             if (!isSuccessful) return Ok("UpdateStatusFailed");

@@ -13,9 +13,5 @@ public class ScheduleFilter
 
     public DateTime EndTime { get; set; }
 
-    public string? Content { get; set; }
-
     public string Status { get; set; } = null!;
-
-    public int? Rating { get; set; }
 }

@@ -9,6 +9,7 @@ namespace FPTAlumniConnect.API.Mappers
         public ScheduleModule()
         {
             CreateMap<Schedule, ScheduleReponse>();
+            CreateMap<ScheduleInfo, Schedule>();
         }
     }
 }
