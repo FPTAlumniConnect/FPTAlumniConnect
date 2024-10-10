@@ -7,8 +7,6 @@ namespace FPTAlumniConnect.BusinessTier.Payload.Post
     {
         public int? AuthorId { get; set; }
 
-        public string Content { get; set; } = null!;
-
         public string Title { get; set; } = null!;
 
         public int? Views { get; set; }

@@ -41,8 +41,8 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpPatch(ApiEndPointConstant.Comment.CommentEndPoint)]
-        [ProducesResponseType(typeof(CommentReponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateCommentInfo(int id, CommentInfo request)
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateCommentInfo(int id, [FromBody] CommentInfo request)
         {
             var isSuccessful = await _commentService.UpdateCommentInfo(id, request);
             if (!isSuccessful) return Ok("UpdateStatusFailed");

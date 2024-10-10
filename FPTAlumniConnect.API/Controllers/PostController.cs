@@ -41,8 +41,8 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpPatch(ApiEndPointConstant.Post.PostEndPoint)]
-        [ProducesResponseType(typeof(PostReponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdatePostInfo(int id, PostInfo request)
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePostInfo(int id, [FromBody] PostInfo request)
         {
             var isSuccessful = await _postService.UpdatePostInfo(id, request);
             if (!isSuccessful) return Ok("UpdateStatusFailed");

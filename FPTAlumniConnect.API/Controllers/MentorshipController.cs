@@ -42,8 +42,8 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpPatch(ApiEndPointConstant.Mentorship.MentorshipEndPoint)]
-        [ProducesResponseType(typeof(MentorshipReponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateMentorshipInfo(int id, MentorshipInfo request)
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateMentorshipInfo(int id, [FromBody] MentorshipInfo request)
         {
             var isSuccessful = await _mentorshipService.UpdateMentorshipInfo(id, request);
             if (!isSuccessful) return Ok("UpdateStatusFailed");

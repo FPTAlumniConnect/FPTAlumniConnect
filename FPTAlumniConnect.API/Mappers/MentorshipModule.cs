@@ -9,6 +9,7 @@ namespace FPTAlumniConnect.API.Mappers
         public MentorshipModule()
         {
             CreateMap<Mentorship, MentorshipReponse>();
+            CreateMap<MentorshipInfo, Mentorship>();
         }
     }
 }
