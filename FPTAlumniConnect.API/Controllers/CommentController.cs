@@ -30,7 +30,7 @@ namespace FPTAlumniConnect.API.Controllers
         public async Task<IActionResult> CreateNewComment([FromBody] CommentInfo request)
         {
             var id = await _commentService.CreateNewComment(request);
-            return CreatedAtAction(nameof(CommentReponse), new { id }, id);
+            return CreatedAtAction(nameof(GetCommentById), new { id }, id);
         }
 
         [HttpGet(ApiEndPointConstant.Comment.CommentsEndPoint)]

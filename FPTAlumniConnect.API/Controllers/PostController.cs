@@ -30,7 +30,7 @@ namespace FPTAlumniConnect.API.Controllers
         public async Task<IActionResult> CreateNewPost([FromBody] PostInfo request)
         {
             var id = await _postService.CreateNewPost(request);
-            return CreatedAtAction(nameof(PostReponse), new { id }, id);
+            return CreatedAtAction(nameof(GetPostById), new { id }, id);
         }
 
         [HttpGet(ApiEndPointConstant.Post.PostsEndPoint)]
