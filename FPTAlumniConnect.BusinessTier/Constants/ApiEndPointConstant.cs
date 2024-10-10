@@ -39,6 +39,16 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string CommentsEndPoint = ApiEndpoint + "/comments";
             public const string CommentEndPoint = CommentsEndPoint + "/{id}";
         }
+        public static class Mentorship
+        {
+            public const string MentorshipsEndPoint = ApiEndpoint + "/mentorships";
+            public const string MentorshipEndPoint = MentorshipsEndPoint + "/{id}";
+        }
+        public static class Schedule
+        {
+            public const string SchedulesEndPoint = ApiEndpoint + "/schedules";
+            public const string ScheduleEndPoint = SchedulesEndPoint + "/{id}";
+        }
         public static class Event
         {
             public const string EventsEndPoint = ApiEndpoint + "/events"; 

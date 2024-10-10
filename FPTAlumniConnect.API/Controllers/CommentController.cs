@@ -1,5 +1,4 @@
-﻿using Azure.Messaging;
-using FPTAlumniConnect.API.Services.Interfaces;
+﻿using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +29,7 @@ namespace FPTAlumniConnect.API.Controllers
         public async Task<IActionResult> CreateNewComment([FromBody] CommentInfo request)
         {
             var id = await _commentService.CreateNewComment(request);
-            return CreatedAtAction(nameof(CommentReponse), new { id }, id);
+            return CreatedAtAction(nameof(GetCommentById), new { id }, id);
         }
 
         [HttpGet(ApiEndPointConstant.Comment.CommentsEndPoint)]

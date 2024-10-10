@@ -1,5 +1,4 @@
-﻿using FirebaseAdmin.Auth;
-using FPTAlumniConnect.BusinessTier.Payload;
+﻿using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.Comment;
 using FPTAlumniConnect.DataTier.Paginate;
 
