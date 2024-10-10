@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FPTAlumniConnect.BusinessTier.Payload.Comment;
 
-public partial class CommentInfo
+public class CommentInfo
 {
     public string Content { get; set; } = null!;
 
