@@ -49,6 +49,11 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string SchedulesEndPoint = ApiEndpoint + "/schedules";
             public const string ScheduleEndPoint = SchedulesEndPoint + "/{id}";
         }
+        public static class CV
+        {
+            public const string CVsEndPoint = ApiEndpoint + "/cvs";
+            public const string CVEndPoint = CVsEndPoint + "/{id}";
+        }
         public static class Event
         {
             public const string EventsEndPoint = ApiEndpoint + "/events"; 
