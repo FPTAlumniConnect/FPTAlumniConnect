@@ -80,6 +80,26 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string NotificationSettingEndPoint = "notification-setting/{id}";
             public const string NotificationSettingsEndPoint = "notification-settings";
         }
+        public static class MajorCode
+        {
+            public const string MajorCodeEndPoint = ApiEndpoint + "/majorcodes";
+            public const string MajorCodesEndPoint = MajorCodeEndPoint + "/{id}";
+        }
+        public static class SpMajorCode
+        {
+            public const string SpMajorCodeEndPoint = ApiEndpoint + "/spmajorcodes";
+            public const string SpMajorCodesEndPoint = SpMajorCodeEndPoint + "/{id}";
+        }
+        public static class JobPost
+        {
+            public const string JobPostEndPoint = ApiEndpoint + "/jobposts";
+            public const string JobPostsEndPoint = JobPostEndPoint + "/{id}";
+        }
+        public static class JobApplication
+        {
+            public const string JobApplicationEndPoint = ApiEndpoint + "/jobapplications";
+            public const string JobApplicationsEndPoint = JobApplicationEndPoint + "/{id}";
+        }
         public static class SocialLink
         {
             public const string SocialLinkEndPoint = "social-link/{id}";
