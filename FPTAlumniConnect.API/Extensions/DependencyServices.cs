@@ -50,6 +50,9 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostReportService, PostReportService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IScheduleService, ScheduleService>();
+            services.AddScoped<IMentorshipService, MentorshipService>();
+            services.AddScoped<ICVService, CVService>();
             return services;
         }
 

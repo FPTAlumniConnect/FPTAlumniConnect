@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace FPTAlumniConnect.BusinessTier.Payload.Comment;
 
-public partial class CommentFilter
+public class CommentFilter
 {
     public int? PostId { get; set; }
 
     public int? AuthorId { get; set; }
-
-    public string Content { get; set; } = null!;
 
     public int? ParentCommentId { get; set; }
 

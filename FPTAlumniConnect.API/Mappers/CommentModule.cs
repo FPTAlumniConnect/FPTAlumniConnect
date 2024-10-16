@@ -9,6 +9,7 @@ namespace FPTAlumniConnect.API.Mappers
         public CommentModule()
         {
             CreateMap<Comment, CommentReponse>();
+            CreateMap<CommentInfo, Comment>();
         }
     }
 }

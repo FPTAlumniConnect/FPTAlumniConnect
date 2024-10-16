@@ -1,5 +1,4 @@
-﻿using Azure.Messaging;
-using FPTAlumniConnect.API.Services.Interfaces;
+﻿using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +29,7 @@ namespace FPTAlumniConnect.API.Controllers
         public async Task<IActionResult> CreateNewReport([FromBody] PostReportFilter request)
         {
             var id = await _postReportService.CreateNewReport(request);
-            return CreatedAtAction(nameof(PostReportReponse), new { id }, id);
+            return CreatedAtAction(nameof(GetReportById), new { id }, id);
         }
 
         [HttpGet(ApiEndPointConstant.PostReport.PostReportsEndPoint)]

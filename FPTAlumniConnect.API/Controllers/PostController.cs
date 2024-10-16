@@ -1,5 +1,4 @@
-﻿using Azure.Messaging;
-using FPTAlumniConnect.API.Services.Interfaces;
+﻿using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +29,7 @@ namespace FPTAlumniConnect.API.Controllers
         public async Task<IActionResult> CreateNewPost([FromBody] PostInfo request)
         {
             var id = await _postService.CreateNewPost(request);
-            return CreatedAtAction(nameof(PostReponse), new { id }, id);
+            return CreatedAtAction(nameof(GetPostById), new { id }, id);
         }
 
         [HttpGet(ApiEndPointConstant.Post.PostsEndPoint)]
@@ -42,8 +41,8 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpPatch(ApiEndPointConstant.Post.PostEndPoint)]
-        [ProducesResponseType(typeof(PostReponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdatePostInfo(int id, PostInfo request)
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePostInfo(int id, [FromBody] PostInfo request)
         {
             var isSuccessful = await _postService.UpdatePostInfo(id, request);
             if (!isSuccessful) return Ok("UpdateStatusFailed");
