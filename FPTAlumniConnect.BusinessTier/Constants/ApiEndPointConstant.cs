@@ -65,5 +65,10 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string NotificationSettingEndPoint = "notification-setting/{id}";
             public const string NotificationSettingsEndPoint = "notification-settings";
         }
+        public static class SocialLink
+        {
+            public const string SocialLinkEndPoint = "social-link/{id}";
+            public const string SocialLinksEndPoint = "social-links";
+        }
     }
 }
