@@ -100,5 +100,10 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string JobApplicationEndPoint = ApiEndpoint + "/jobapplications";
             public const string JobApplicationsEndPoint = JobApplicationEndPoint + "/{id}";
         }
+        public static class SocialLink
+        {
+            public const string SocialLinkEndPoint = "social-link/{id}";
+            public const string SocialLinksEndPoint = "social-links";
+        }
     }
 }

@@ -53,12 +53,17 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IMentorshipService, MentorshipService>();
             services.AddScoped<ICVService, CVService>();
-
             services.AddScoped<IMajorCodeService, MajorCodeService>();
             services.AddScoped<ISpMajorCodeService, SpMajorCodeService>();
-
             services.AddScoped<IJobPostService, JobPostService>();
             services.AddScoped<IJobApplicationService, JobApplicationService>();
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IUserJoinEventService, UserJoinEventService>();
+            services.AddScoped<INotificationSettingService, NotificationSettingService>();
+            services.AddScoped<IPrivacySettingService, PrivacySettingService>();
+            services.AddScoped<ISocialLinkService, SocialLinkService>();
+            services.AddScoped<IEducationHistoryService, EducationHistoryService>();
+
             return services;
         }
 
