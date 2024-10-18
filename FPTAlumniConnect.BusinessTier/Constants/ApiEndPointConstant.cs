@@ -105,5 +105,15 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string SocialLinkEndPoint = "social-link/{id}";
             public const string SocialLinksEndPoint = "social-links";
         }
+        public static class MessageGroupChat
+        {
+            public const string MessagesEndPoint = ApiEndpoint + "/messages-group-chat"; 
+            public const string MessageEndPoint = MessagesEndPoint + "/{id}"; 
+        }
+        public static class GroupChat
+        {
+            public const string GroupChatsEndPoint = ApiEndpoint + "/groupchats";
+            public const string GroupChatEndPoint = GroupChatsEndPoint + "/{id}";
+        }
     }
 }
