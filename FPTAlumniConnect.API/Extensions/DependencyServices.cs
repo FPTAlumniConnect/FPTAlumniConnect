@@ -63,7 +63,10 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IPrivacySettingService, PrivacySettingService>();
             services.AddScoped<ISocialLinkService, SocialLinkService>();
             services.AddScoped<IEducationHistoryService, EducationHistoryService>();
+            services.AddScoped<IMessageGroupChatService, MessageGroupChatService>();
+            services.AddScoped<IGroupChatService, GroupChatService>();
 
+        
             return services;
         }
 
