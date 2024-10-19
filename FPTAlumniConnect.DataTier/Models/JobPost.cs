@@ -8,7 +8,7 @@ public partial class JobPost
     public int JobPostId { get; set; }
 
     public string JobDescription { get; set; } = null!;
-
+    public string JobTitle {  get; set; } = null!;
     public string? Salary { get; set; }
 
     public string? Location { get; set; }
