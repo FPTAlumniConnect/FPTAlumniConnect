@@ -60,10 +60,6 @@ namespace FPTAlumniConnect.API.Services.Implements
             }
             eventToUpdate.Location = string.IsNullOrEmpty(request.Location) ? eventToUpdate.Location : request.Location;
 
-            if (request.EventHolderId.HasValue)
-            {
-                eventToUpdate.EventHolderId = request.EventHolderId.Value;
-            }
 
             _unitOfWork.GetRepository<Event>().UpdateAsync(eventToUpdate);
             bool isSuccesful = await _unitOfWork.CommitAsync() > 0;

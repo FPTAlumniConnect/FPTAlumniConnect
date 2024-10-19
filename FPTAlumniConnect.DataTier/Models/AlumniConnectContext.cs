@@ -145,18 +145,21 @@ public partial class AlumniConnectContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.EventHolderId).HasColumnName("EventHolderID");
             entity.Property(e => e.EventName).HasMaxLength(255);
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+            entity.Property(e => e.Status)
+    .HasDefaultValue(false); 
 
             entity.HasOne(d => d.Organizer).WithMany(p => p.Events)
                 .HasForeignKey(d => d.OrganizerId)
                 .HasConstraintName("FK__Events__Organize__02084FDA");
+
         });
+
 
         modelBuilder.Entity<GroupChat>(entity =>
         {
@@ -241,6 +244,7 @@ public partial class AlumniConnectContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.JobTitle).HasMaxLength(255);
             entity.Property(e => e.Location).HasMaxLength(255);
             entity.Property(e => e.MajorId).HasColumnName("MajorID");
             entity.Property(e => e.Salary).HasMaxLength(255);
