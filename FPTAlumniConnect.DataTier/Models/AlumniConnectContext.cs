@@ -86,6 +86,8 @@ public partial class AlumniConnectContext : DbContext
             entity.HasOne(d => d.Post).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.PostId)
                 .HasConstraintName("FK__Comments__PostID__1F98B2C1");
+            entity.Property(e => e.Status)
+    .HasDefaultValue(true);
         });
 
         modelBuilder.Entity<Cv>(entity =>
