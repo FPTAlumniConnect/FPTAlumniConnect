@@ -9,10 +9,11 @@ public partial class JobPost
 
     public string JobDescription { get; set; } = null!;
     public string JobTitle {  get; set; } = null!;
-    public string? Salary { get; set; }
 
     public string? Location { get; set; }
-
+    public int? MinSalary { get; set; }
+    public int? MaxSalary { get; set; }
+    public Boolean IsDeal { get; set; }
     public string? Requirements { get; set; }
 
     public string? Benefits { get; set; }

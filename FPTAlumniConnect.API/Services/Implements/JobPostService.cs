@@ -44,7 +44,6 @@ namespace FPTAlumniConnect.API.Services.Implements
                 throw new BadHttpRequestException("JobPostNotFound");
 
             jobPost.JobDescription = string.IsNullOrEmpty(request.JobDescription) ? jobPost.JobDescription : request.JobDescription;
-            jobPost.Salary = request.Salary;
             jobPost.Location = request.Location;
             jobPost.Requirements = request.Requirements;
             jobPost.Benefits = request.Benefits;

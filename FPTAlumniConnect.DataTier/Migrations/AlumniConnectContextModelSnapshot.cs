@@ -410,6 +410,9 @@ namespace FPTAlumniConnect.DataTier.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<bool>("IsDeal")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JobDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -427,17 +430,25 @@ namespace FPTAlumniConnect.DataTier.Migrations
                         .HasColumnType("int")
                         .HasColumnName("MajorID");
 
+                    b.Property<int?>("MaxSalary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<int?>("MinSalary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((0))");
+
                     b.Property<string>("Requirements")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Salary")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<string>("Status")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasDefaultValue("False");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime");
@@ -735,6 +746,10 @@ namespace FPTAlumniConnect.DataTier.Migrations
                     b.Property<int?>("PostId")
                         .HasColumnType("int")
                         .HasColumnName("PostID");
+
+                    b.Property<string>("TypeOfReport")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAdd()
