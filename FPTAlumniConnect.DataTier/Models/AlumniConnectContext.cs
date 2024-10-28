@@ -249,7 +249,9 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.JobTitle).HasMaxLength(255);
             entity.Property(e => e.Location).HasMaxLength(255);
             entity.Property(e => e.MajorId).HasColumnName("MajorID");
-            entity.Property(e => e.Salary).HasMaxLength(255);
+            entity.Property(e => e.MinSalary).HasDefaultValueSql("((0))");
+            entity.Property(e => e.MaxSalary).HasDefaultValueSql("((0))");
+            entity.Property(e => e.Status).HasDefaultValue(false);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Time).HasColumnType("datetime");
             entity.Property(e => e.UpdatedAt)
@@ -385,6 +387,7 @@ public partial class AlumniConnectContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
+            entity.Property(e => e.TypeOfReport).HasMaxLength(255);
             entity.Property(e => e.PostId).HasColumnName("PostID");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
