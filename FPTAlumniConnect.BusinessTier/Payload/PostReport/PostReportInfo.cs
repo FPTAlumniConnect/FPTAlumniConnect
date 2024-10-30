@@ -3,14 +3,8 @@ using System.Collections.Generic;
 
 namespace FPTAlumniConnect.BusinessTier.Payload.PostReport
 {
-    public class PostReportReponse
+    public class PostReportInfo
     {
-        public int RpId { get; set; }
-
         public string? TypeOfReport { get; set; }
-
-        public int? PostId { get; set; }
-
-        public int? UserId { get; set; }
     }
 }

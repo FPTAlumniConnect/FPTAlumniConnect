@@ -10,6 +10,7 @@ public partial class PostReport
     public int? PostId { get; set; }
 
     public int? UserId { get; set; }
+
     public string? TypeOfReport { get; set; }
 
     public DateTime? CreatedAt { get; set; }

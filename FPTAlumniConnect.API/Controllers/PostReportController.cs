@@ -3,6 +3,8 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.PostReport;
+using FPTAlumniConnect.API.Services.Implements;
+using FPTAlumniConnect.BusinessTier.Payload.Post;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -38,6 +40,15 @@ namespace FPTAlumniConnect.API.Controllers
         {
             var response = await _postReportService.ViewAllReport(filter, pagingModel);
             return Ok(response);
+        }
+
+        [HttpPatch(ApiEndPointConstant.PostReport.PostReportsEndPoint)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateReportInfo(int id, [FromBody] PostReportInfo request)
+        {
+            var isSuccessful = await _postReportService.UpdateReportInfo(id, request);
+            if (!isSuccessful) return Ok("UpdateStatusFailed");
+            return Ok("UpdateStatusSuccess");
         }
     }
 }

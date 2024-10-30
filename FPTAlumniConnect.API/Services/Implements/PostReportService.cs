@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
+using FPTAlumniConnect.BusinessTier.Payload.Post;
 using FPTAlumniConnect.BusinessTier.Payload.PostReport;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
@@ -27,6 +28,21 @@ namespace FPTAlumniConnect.API.Services.Implements
             if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
 
             return newRp.RpId;
+        }
+
+        public async Task<bool> UpdateReportInfo(int id, PostReportInfo request)
+        {
+            PostReport rp = await _unitOfWork.GetRepository<PostReport>().SingleOrDefaultAsync(
+                predicate: x => x.PostId.Equals(id)) ??
+                throw new BadHttpRequestException("ReportNotFound");
+
+            rp.TypeOfReport = string.IsNullOrEmpty(request.TypeOfReport) ? rp.TypeOfReport : request.TypeOfReport;
+            rp.UpdatedAt = DateTime.Now;
+            rp.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+
+            _unitOfWork.GetRepository<PostReport>().UpdateAsync(rp);
+            bool isSuccesful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccesful;
         }
 
         public async Task<PostReportReponse> GetReportById(int id)
