@@ -4,7 +4,6 @@ using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.PostReport;
 using FPTAlumniConnect.API.Services.Implements;
-using FPTAlumniConnect.BusinessTier.Payload.Post;
 
 namespace FPTAlumniConnect.API.Controllers
 {

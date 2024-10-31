@@ -4,7 +4,6 @@ using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.JobApplication;
 using FPTAlumniConnect.DataTier.Paginate;
-using FPTAlumniConnect.BusinessTier.Payload.Post;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -45,7 +44,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.JobApplication.JobApplicationsEndPoint)]
-        [ProducesResponseType(typeof(PostReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(JobApplicationResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllJobApplications([FromQuery] JobApplicationFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _jobApplicationService.ViewAllJobApplications(filter, pagingModel);
