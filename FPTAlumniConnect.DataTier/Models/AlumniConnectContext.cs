@@ -62,7 +62,7 @@ public partial class AlumniConnectContext : DbContext
     public virtual DbSet<UserJoinEvent> UserJoinEvents { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;User Id=sa;Password=123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;User Id=sa;Password=12345;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -600,7 +600,7 @@ public partial class AlumniConnectContext : DbContext
 
         modelBuilder.Entity<TagJob>(entity =>
         {
-            entity.HasKey(e => e.TagJobId).HasName("PK ?");
+            entity.HasKey(e => e.TagJobId);
 
             entity.ToTable("TagJob");
 
@@ -615,13 +615,12 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
             entity.HasOne(d => d.Cv).WithMany(p => p.TagJobs)
-                .HasForeignKey(d => d.CvID)
-                .HasConstraintName("PK__CV__3214EC07F4EB68AB");
+                .HasForeignKey(d => d.CvID);
         });
 
         modelBuilder.Entity<SkillJob>(entity =>
         {
-            entity.HasKey(e => e.SkillJobId).HasName("PK ?");
+            entity.HasKey(e => e.SkillJobId);
 
             entity.ToTable("SkillJob");
 
@@ -636,8 +635,7 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
             entity.HasOne(d => d.Cv).WithMany(p => p.SkillJobs)
-                .HasForeignKey(d => d.CvID)
-                .HasConstraintName("PK__CV__3214EC07F4EB68AB");
+                .HasForeignKey(d => d.CvID);
         });
 
         OnModelCreatingPartial(modelBuilder);
