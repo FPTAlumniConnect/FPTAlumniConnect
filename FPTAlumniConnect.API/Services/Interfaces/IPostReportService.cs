@@ -6,7 +6,7 @@ namespace FPTAlumniConnect.API.Services.Interfaces
 {
     public interface IPostReportService
     {
-        Task<int> CreateNewReport(PostReportFilter request);
+        Task<int> CreateNewReport(PostReportInfo request);
         Task<bool> UpdateReportInfo(int id, PostReportInfo request);
         Task<IPaginate<PostReportReponse>> ViewAllReport(PostReportFilter filter, PagingModel pagingModel);
         Task<PostReportReponse> GetReportById(int id);

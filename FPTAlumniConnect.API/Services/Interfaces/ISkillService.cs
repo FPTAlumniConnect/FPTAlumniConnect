@@ -6,7 +6,7 @@ namespace FPTAlumniConnect.API.Services.Interfaces
 {
     public interface ISkillService
     {
-        Task<int> CreateNewSkill(SkillJobFilter request);
+        Task<int> CreateNewSkill(SkillJobInfo request);
         Task<bool> UpdateSkillInfo(int id, SkillJobInfo request);
         Task<IPaginate<SkillJobReponse>> ViewAllSkill(SkillJobFilter filter, PagingModel pagingModel);
         Task<SkillJobReponse> GetSkillById(int id);

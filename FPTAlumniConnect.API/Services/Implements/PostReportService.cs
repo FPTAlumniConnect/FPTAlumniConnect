@@ -18,7 +18,7 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         }
 
-        public async Task<int> CreateNewReport(PostReportFilter request)
+        public async Task<int> CreateNewReport(PostReportInfo request)
         {
             PostReport newRp = _mapper.Map<PostReport>(request);
 

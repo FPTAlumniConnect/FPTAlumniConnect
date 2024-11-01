@@ -27,7 +27,7 @@ namespace FPTAlumniConnect.API.Controllers
 
         [HttpPost(ApiEndPointConstant.Skill.SkillsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateNewSkill([FromBody] SkillJobFilter request)
+        public async Task<IActionResult> CreateNewSkill([FromBody] SkillJobInfo request)
         {
             var id = await _skillService.CreateNewSkill(request);
             return CreatedAtAction(nameof(GetSkillById), new { id }, id);

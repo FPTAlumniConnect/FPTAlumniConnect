@@ -9,7 +9,7 @@ namespace FPTAlumniConnect.API.Mappers
         public PostReportModule()
         {
             CreateMap<PostReport, PostReportReponse>();
-            CreateMap<PostReportFilter, PostReport>();
+            CreateMap<PostReportInfo, PostReport>();
         }
     }
 }

@@ -10,9 +10,9 @@ namespace FPTAlumniConnect.API.Controllers
     [ApiController]
     public class TagJobController : BaseController<TagJobController>
     {
-        private readonly ITagJobService _tagService;
+        private readonly ITagService _tagService;
 
-        public TagJobController(ILogger<TagJobController> logger, ITagJobService tagService) : base(logger)
+        public TagJobController(ILogger<TagJobController> logger, ITagService tagService) : base(logger)
         {
             _tagService = tagService;
         }
@@ -27,7 +27,7 @@ namespace FPTAlumniConnect.API.Controllers
 
         [HttpPost(ApiEndPointConstant.Tag.TagsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateNewTag([FromBody] TagJobFilter request)
+        public async Task<IActionResult> CreateNewTag([FromBody] TagJobInfo request)
         {
             var id = await _tagService.CreateNewTag(request);
             return CreatedAtAction(nameof(GetTagById), new { id }, id);
