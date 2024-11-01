@@ -27,7 +27,7 @@ namespace FPTAlumniConnect.API.Controllers
 
         [HttpPost(ApiEndPointConstant.PostReport.PostReportsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateNewReport([FromBody] PostReportFilter request)
+        public async Task<IActionResult> CreateNewReport([FromBody] PostReportInfo request)
         {
             var id = await _postReportService.CreateNewReport(request);
             return CreatedAtAction(nameof(GetReportById), new { id }, id);
