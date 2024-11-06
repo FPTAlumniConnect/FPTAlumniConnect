@@ -9,6 +9,7 @@ namespace FPTAlumniConnect.API.Mappers
         public NotificationSettingModule() 
         {
             CreateMap<NotificationSetting, GetNotificationSettingResponse>();
+            CreateMap<NotificationSettingInfo, NotificationSetting>();
         }
     }
 }
