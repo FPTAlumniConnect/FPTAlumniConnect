@@ -384,9 +384,12 @@ public partial class AlumniConnectContext : DbContext
 
             entity.Property(e => e.PostId).HasColumnName("PostID");
             entity.Property(e => e.AuthorId).HasColumnName("AuthorID");
+            entity.Property(e => e.MajorId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Content).HasMaxLength(255);
+            entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.IsPrivate).HasDefaultValueSql("((0))");
             entity.Property(e => e.Status).HasMaxLength(255);
@@ -603,7 +606,7 @@ public partial class AlumniConnectContext : DbContext
             entity.HasKey(e => e.TagJobId);
 
             entity.ToTable("TagJob");
-
+            entity.Property(e => e.TagJobId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -623,7 +626,7 @@ public partial class AlumniConnectContext : DbContext
             entity.HasKey(e => e.SkillJobId);
 
             entity.ToTable("SkillJob");
-
+            entity.Property(e => e.SkillJobId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
