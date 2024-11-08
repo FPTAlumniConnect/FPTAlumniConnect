@@ -47,8 +47,14 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             post.Title = string.IsNullOrEmpty(request.Title) ? post.Title : request.Title;
             post.Content = string.IsNullOrEmpty(request.Content) ? post.Content : request.Content;
-            post.IsPrivate = request.IsPrivate;
-            post.MajorId = request.MajorId;
+            if (request.IsPrivate.HasValue)
+            {
+                post.IsPrivate = request.IsPrivate.Value;
+            }
+            if (request.MajorId.HasValue)
+            {
+                post.MajorId = request.MajorId.Value;
+            }
             post.UpdatedAt = DateTime.Now;
             post.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 

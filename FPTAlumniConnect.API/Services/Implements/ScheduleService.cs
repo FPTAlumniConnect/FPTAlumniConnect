@@ -46,8 +46,14 @@ namespace FPTAlumniConnect.API.Services.Implements
                 throw new BadHttpRequestException("ScheduleNotFound");
 
             schedule.Content = string.IsNullOrEmpty(request.Content) ? schedule.Content : request.Content;
-            schedule.StartTime = request.StartTime;
-            schedule.EndTime = request.EndTime;
+            if (request.StartTime.HasValue)
+            {
+                schedule.StartTime = request.StartTime.Value;
+            }
+            if (request.EndTime.HasValue)
+            {
+                schedule.EndTime = request.EndTime.Value;
+            }
             schedule.UpdatedAt = DateTime.Now;
             schedule.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 

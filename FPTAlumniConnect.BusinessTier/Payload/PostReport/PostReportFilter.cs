@@ -8,5 +8,7 @@ namespace FPTAlumniConnect.BusinessTier.Payload.PostReport
         public int? PostId { get; set; }
 
         public int? UserId { get; set; }
+
+        public string? TypeOfReport { get; set; }
     }
 }
