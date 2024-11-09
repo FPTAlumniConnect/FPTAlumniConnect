@@ -44,8 +44,20 @@ namespace FPTAlumniConnect.API.Services.Implements
             Comment comment = await _unitOfWork.GetRepository<Comment>().SingleOrDefaultAsync(
                 predicate: x => x.CommentId.Equals(id)) ??
                 throw new BadHttpRequestException("CommentNotFound");
-
+            if (request.PostId.HasValue)
+            {
+                comment.PostId = request.PostId.Value;
+            }
+            if (request.AuthorId.HasValue)
+            {
+                comment.AuthorId = request.AuthorId.Value;
+            }
+            if (request.ParentCommentId.HasValue)
+            {
+                comment.ParentCommentId = request.ParentCommentId.Value;
+            }
             comment.Content = string.IsNullOrEmpty(request.Content) ? comment.Content : request.Content;
+            comment.Type = string.IsNullOrEmpty(request.Type) ? comment.Type : request.Type;
             comment.UpdatedAt = DateTime.Now;
             comment.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
