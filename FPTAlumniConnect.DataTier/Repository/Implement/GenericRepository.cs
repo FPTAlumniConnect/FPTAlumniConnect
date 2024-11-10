@@ -156,6 +156,16 @@ namespace FPTAlumniConnect.DataTier.Repository.Implement
             _dbSet.RemoveRange(entities);
         }
 
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbContext.Set<T>().Where(predicate).ToListAsync();
+        }
+        public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+        }
+
+
         #endregion
     }
 }

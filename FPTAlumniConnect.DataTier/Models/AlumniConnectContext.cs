@@ -60,9 +60,9 @@ public partial class AlumniConnectContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserJoinEvent> UserJoinEvents { get; set; }
-
+    public DbSet<Notification> Notifications { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;User Id=sa;Password=12345;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,7 +93,21 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.Status)
     .HasDefaultValue(true);
         });
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
 
+            entity.HasOne<User>()
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId);
+            entity.Property(e => e.Message)
+                  .IsRequired()
+                  .HasMaxLength(500);
+            entity.Property(e => e.Timestamp)
+                  .HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.IsRead)
+                  .HasDefaultValue(false);
+        }); 
         modelBuilder.Entity<Cv>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__CV__3214EC07F4EB68AB");

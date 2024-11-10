@@ -676,6 +676,39 @@ namespace FPTAlumniConnect.DataTier.Migrations
                     b.ToTable("MessageGroupChat", (string)null);
                 });
 
+            modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.NotificationSetting", b =>
                 {
                     b.Property<int>("Id")
@@ -767,8 +800,7 @@ namespace FPTAlumniConnect.DataTier.Migrations
                         .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("MajorId")
-                        .HasColumnType("int")
-                        .HasColumnName("MajorId");
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1000,8 +1032,7 @@ namespace FPTAlumniConnect.DataTier.Migrations
                 {
                     b.Property<int>("SkillJobId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("SkillJobId");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillJobId"));
 
@@ -1126,8 +1157,7 @@ namespace FPTAlumniConnect.DataTier.Migrations
                 {
                     b.Property<int>("TagJobId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("TagJobId");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagJobId"));
 
@@ -1421,6 +1451,15 @@ namespace FPTAlumniConnect.DataTier.Migrations
                         .HasConstraintName("FK__MessageGr__Membe__778AC167");
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.Notification", b =>
+                {
+                    b.HasOne("FPTAlumniConnect.DataTier.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.NotificationSetting", b =>

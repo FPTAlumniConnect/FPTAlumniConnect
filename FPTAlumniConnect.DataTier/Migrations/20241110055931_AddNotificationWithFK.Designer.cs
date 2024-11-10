@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FPTAlumniConnect.DataTier.Migrations
 {
     [DbContext(typeof(AlumniConnectContext))]
-    [Migration("20241031011313_updateDB")]
-    partial class updateDB
+    [Migration("20241110055931_AddNotificationWithFK")]
+    partial class AddNotificationWithFK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -679,6 +679,39 @@ namespace FPTAlumniConnect.DataTier.Migrations
                     b.ToTable("MessageGroupChat", (string)null);
                 });
 
+            modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.NotificationSetting", b =>
                 {
                     b.Property<int>("Id")
@@ -752,7 +785,8 @@ namespace FPTAlumniConnect.DataTier.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -778,7 +812,8 @@ namespace FPTAlumniConnect.DataTier.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -1419,6 +1454,15 @@ namespace FPTAlumniConnect.DataTier.Migrations
                         .HasConstraintName("FK__MessageGr__Membe__778AC167");
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.Notification", b =>
+                {
+                    b.HasOne("FPTAlumniConnect.DataTier.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FPTAlumniConnect.DataTier.Models.NotificationSetting", b =>
