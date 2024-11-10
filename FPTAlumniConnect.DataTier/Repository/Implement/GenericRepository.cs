@@ -156,6 +156,11 @@ namespace FPTAlumniConnect.DataTier.Repository.Implement
             _dbSet.RemoveRange(entities);
         }
 
+        public virtual async Task<T> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
         #endregion
     }
 }

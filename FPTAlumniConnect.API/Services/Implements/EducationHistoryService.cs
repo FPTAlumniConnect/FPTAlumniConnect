@@ -17,8 +17,18 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewEducationHistory(EducationHistoryInfo request)
         {
+            // Kiểm tra xem Iduser có tồn tại trong bảng User không
+            bool userExists = await _unitOfWork.GetRepository<User>().AsQueryableAsync(u => u.UserId == request.Iduser) != null;
+
+            if (!userExists)
+            {
+                throw new BadHttpRequestException("User with the specified Id does not exist.");
+            }
+
+            // Ánh xạ request sang EducationHistory
             var newEducationHistory = _mapper.Map<EducationHistory>(request);
 
+            // Thêm EducationHistory vào database
             await _unitOfWork.GetRepository<EducationHistory>().InsertAsync(newEducationHistory);
 
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -26,6 +36,7 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             return newEducationHistory.EduHistoryId;
         }
+
 
         public async Task<GetEducationHistoryResponse> GetEducationHistoryById(int id)
         {

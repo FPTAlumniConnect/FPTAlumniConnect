@@ -9,6 +9,8 @@ namespace FPTAlumniConnect.API.Mappers
         public EducationHistoryModule()
         {
             CreateMap<EducationHistory, GetEducationHistoryResponse>();
+            CreateMap<EducationHistoryInfo, EducationHistory>();
+
         }
     }
 }
