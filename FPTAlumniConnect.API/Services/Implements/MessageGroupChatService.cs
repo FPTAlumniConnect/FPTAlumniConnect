@@ -44,6 +44,7 @@ namespace FPTAlumniConnect.API.Services.Implements
                 ?? throw new BadHttpRequestException("Message group chat not found");
 
             messageToUpdate.Content = string.IsNullOrEmpty(request.Content) ? messageToUpdate.Content : request.Content;
+            messageToUpdate.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
             messageToUpdate.UpdatedAt = DateTime.UtcNow;
 
             _unitOfWork.GetRepository<MessageGroupChat>().UpdateAsync(messageToUpdate);

@@ -92,8 +92,8 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         }
         public static class MajorCode
         {
-            public const string MajorCodeEndPoint = ApiEndpoint + "/majorcodes";
-            public const string MajorCodesEndPoint = MajorCodeEndPoint + "/{id}";
+            public const string MajorCodesEndPoint = ApiEndpoint + "/majorcodes";
+            public const string MajorCodeEndPoint = MajorCodesEndPoint + "/{id}";
         }
         public static class SpMajorCode
         {
@@ -102,13 +102,13 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         }
         public static class JobPost
         {
-            public const string JobPostEndPoint = ApiEndpoint + "/jobposts";
-            public const string JobPostsEndPoint = JobPostEndPoint + "/{id}";
+            public const string JobPostsEndPoint = ApiEndpoint + "/jobposts";
+            public const string JobPostEndPoint = JobPostsEndPoint + "/{id}";
         }
         public static class JobApplication
         {
-            public const string JobApplicationEndPoint = ApiEndpoint + "/jobapplications";
-            public const string JobApplicationsEndPoint = JobApplicationEndPoint + "/{id}";
+            public const string JobApplicationsEndPoint = ApiEndpoint + "/jobapplications";
+            public const string JobApplicationEndPoint = JobApplicationsEndPoint + "/{id}";
         }
         public static class SocialLink
         {

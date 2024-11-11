@@ -55,6 +55,10 @@ namespace FPTAlumniConnect.API.Services.Implements
             {
                 post.MajorId = request.MajorId.Value;
             }
+            if (request.AuthorId.HasValue)
+            {
+                post.AuthorId = request.AuthorId.Value;
+            }
             post.UpdatedAt = DateTime.Now;
             post.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 

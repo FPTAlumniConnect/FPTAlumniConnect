@@ -53,13 +53,17 @@ namespace FPTAlumniConnect.API.Services.Implements
             {
                 eventToUpdate.StartDate = request.StartDate.Value;
             }
-
             if (request.EndDate.HasValue)
             {
                 eventToUpdate.EndDate = request.EndDate.Value;
             }
+            if (request.OrganizerId.HasValue)
+            {
+                eventToUpdate.OrganizerId = request.OrganizerId.Value;
+            }
             eventToUpdate.Location = string.IsNullOrEmpty(request.Location) ? eventToUpdate.Location : request.Location;
-
+            eventToUpdate.UpdatedAt = DateTime.Now;
+            eventToUpdate.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
             _unitOfWork.GetRepository<Event>().UpdateAsync(eventToUpdate);
             bool isSuccesful = await _unitOfWork.CommitAsync() > 0;

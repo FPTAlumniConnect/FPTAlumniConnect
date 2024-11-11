@@ -18,7 +18,7 @@ namespace FPTAlumniConnect.API.Controllers
             _groupChatService = groupChatService;
         }
 
-        [HttpPost(ApiEndPointConstant.GroupChat.GroupChatEndPoint)]
+        [HttpPost(ApiEndPointConstant.GroupChat.GroupChatsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateGroupChat([FromBody] GroupChatInfo request)
         {

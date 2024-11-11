@@ -4,7 +4,7 @@
     using FPTAlumniConnect.DataTier.Models;
     using FPTAlumniConnect.DataTier.Repository.Interfaces;
     using FPTAlumniConnect.DataTier.Paginate;
-    using global::FPTAlumniConnect.BusinessTier.Payload.UserJoinEvent;
+    using FPTAlumniConnect.BusinessTier.Payload.UserJoinEvent;
 
     namespace FPTAlumniConnect.API.Services.Implements
     {
@@ -46,8 +46,9 @@
                 {
                     userJoinEventToUpdate.Rating = request.Rating.Value;
                 }
-
-                _unitOfWork.GetRepository<UserJoinEvent>().UpdateAsync(userJoinEventToUpdate);
+                userJoinEventToUpdate.UpdatedAt = DateTime.Now;
+                userJoinEventToUpdate.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+            _unitOfWork.GetRepository<UserJoinEvent>().UpdateAsync(userJoinEventToUpdate);
                 bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
 
                 return isSuccessful;
