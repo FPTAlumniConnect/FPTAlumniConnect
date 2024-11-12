@@ -41,7 +41,7 @@ namespace FPTAlumniConnect.API.Controllers
             return Ok(response);
         }
 
-        [HttpPatch(ApiEndPointConstant.PostReport.PostReportsEndPoint)]
+        [HttpPatch(ApiEndPointConstant.PostReport.PostReportEndPoint)]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateReportInfo(int id, [FromBody] PostReportInfo request)
         {

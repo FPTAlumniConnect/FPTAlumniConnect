@@ -2,7 +2,6 @@
 {
     public class PrivacySettingInfo
     {
-        public int? UserId { get; set; }
         public bool? VisibleToEducationHistory { get; set; }
         public bool? VisibleToMajor { get; set; }
         public bool? VisibleToEmail { get; set; }
