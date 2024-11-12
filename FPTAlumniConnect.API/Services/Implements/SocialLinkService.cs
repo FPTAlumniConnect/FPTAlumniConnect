@@ -5,6 +5,7 @@ using FPTAlumniConnect.BusinessTier.Payload.SocialLink;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
+using static FPTAlumniConnect.BusinessTier.Constants.ApiEndPointConstant;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
@@ -17,12 +18,24 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateSocialLink(SocialLinkInfo request)
         {
+            // Check if the user already has this link
+            SoicalLink existingLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
+                predicate: s => s.UserId == request.UserId && s.Link == request.Link);
+
+            if (existingLink != null)
+            {
+                throw new BadHttpRequestException("This link already exists for the user.");
+            }
+
+            // Map the request to a new SocialLink entity
             var newSocialLink = _mapper.Map<SoicalLink>(request);
             newSocialLink.CreatedAt = DateTime.Now;
             newSocialLink.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
+            // Insert the new link
             await _unitOfWork.GetRepository<SoicalLink>().InsertAsync(newSocialLink);
 
+            // Commit changes
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
 
@@ -41,11 +54,20 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateSocialLink(int id, SocialLinkInfo request)
         {
+            // Check if the user already has this link
+            SoicalLink existingLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
+                predicate: s => s.UserId == request.UserId && s.Link == request.Link);
+
+            if (existingLink != null)
+            {
+                throw new BadHttpRequestException("This link already exists!");
+            }
+
             SoicalLink socialLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
                 predicate: x => x.Slid.Equals(id)) ??
                 throw new BadHttpRequestException("SocialLinkNotFound");
 
-            socialLink.UserId = request.UserId ?? socialLink.UserId;
+            //socialLink.UserId = request.UserId ?? socialLink.UserId;  // Tại sao lại cho thay đổi ???
             socialLink.Link = request.Link ?? socialLink.Link;
             socialLink.UpdatedAt = DateTime.Now;
             socialLink.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;

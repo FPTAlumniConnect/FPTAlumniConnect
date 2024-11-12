@@ -11,6 +11,8 @@ namespace FPTAlumniConnect.API.Mappers
         {
             CreateMap<UserJoinEvent, GetUserJoinEventResponse>();
             CreateMap<UserJoinEvent, UserJoinEventInfo>();
+
+            CreateMap<UserJoinEventInfo, UserJoinEvent>();
         }
     }
 }
