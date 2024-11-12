@@ -19,7 +19,19 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewTag(TagJobInfo request)
         {
-            TagJob newTag = _mapper.Map<TagJob>(request);
+            // Check if the user already has this link
+            TagJob existingTagJob = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
+                predicate: s => s.Tag == request.Tag && s.CvID == request.CvID);
+
+            if (existingTagJob != null)
+            {
+                throw new BadHttpRequestException("This CV already exists for the tag.");
+            }
+
+            var newTag = _mapper.Map<TagJob>(request);
+            newTag.CreatedAt = DateTime.Now;
+            newTag.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+
 
             await _unitOfWork.GetRepository<TagJob>().InsertAsync(newTag);
 

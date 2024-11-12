@@ -80,9 +80,9 @@ namespace FPTAlumniConnect.API.Services.Implements
                 UserInfo = new UserResponse()
                 {
                     UserId = userLogin.UserId,
-                    FirstName=userLogin.FirstName,
-                    LastName=userLogin.LastName,
-                    Email=userLogin.Email,
+                    FirstName = userLogin.FirstName,
+                    LastName = userLogin.LastName,
+                    Email = userLogin.Email,
                     GoogleId = userLogin.GoogleId,
                 }
             };
@@ -90,17 +90,33 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateUserInfo(int id, UserInfo request)
         {
+            // Fetch the user based on the provided ID.
             User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
                 predicate: x => x.UserId.Equals(id)) ??
                 throw new BadHttpRequestException("UserNotFound");
 
+            // Check if the logged-in user is an admin or staff
+            var loggedInUserRole = _httpContextAccessor.HttpContext?.User.FindFirst("Role")?.Value; // Assuming Role is stored as a claim
+            if (loggedInUserRole != null && (loggedInUserRole == "admin" || loggedInUserRole == "staff"))
+            {
+                user.IsMentor = request.IsMentor;
+
+            }
+
+            // Update other fields
             user.FirstName = string.IsNullOrEmpty(request.FirstName) ? user.FirstName : request.FirstName;
             user.Email = string.IsNullOrEmpty(request.Email) ? user.Email : request.Email;
             user.LastName = string.IsNullOrEmpty(request.LastName) ? user.LastName : request.LastName;
+
             user.UpdatedAt = DateTime.Now;
             user.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+
+            // Perform the update in the repository
             _unitOfWork.GetRepository<User>().UpdateAsync(user);
+
+            // Commit the changes
             bool isSuccesful = await _unitOfWork.CommitAsync() > 0;
+
             return isSuccesful;
         }
 

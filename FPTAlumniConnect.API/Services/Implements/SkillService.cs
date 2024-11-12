@@ -19,6 +19,10 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewSkill(SkillJobInfo request)
         {
+            Cv cv = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(request.CvID)) ??
+                throw new BadHttpRequestException("CvNotFound");
+
             SkillJob newSkill = _mapper.Map<SkillJob>(request);
 
             await _unitOfWork.GetRepository<SkillJob>().InsertAsync(newSkill);

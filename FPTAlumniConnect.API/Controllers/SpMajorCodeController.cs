@@ -16,7 +16,7 @@ namespace FPTAlumniConnect.API.Controllers
             _spMajorCodeService = spMajorCodeService;
         }
 
-        [HttpGet(ApiEndPointConstant.SpMajorCode.SpMajorCodeEndPoint)]
+        [HttpGet(ApiEndPointConstant.SpMajorCode.SpMajorCodesEndPoint)]
         [ProducesResponseType(typeof(SpMajorCodeResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSpMajorCodeById(int id)
         {
@@ -24,7 +24,7 @@ namespace FPTAlumniConnect.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost(ApiEndPointConstant.SpMajorCode.SpMajorCodesEndPoint)]
+        [HttpPost(ApiEndPointConstant.SpMajorCode.SpMajorCodeEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNewSpMajorCode([FromBody] SpMajorCodeInfo request)
         {
@@ -32,7 +32,7 @@ namespace FPTAlumniConnect.API.Controllers
             return CreatedAtAction(nameof(GetSpMajorCodeById), new { id }, id);
         }
 
-        [HttpGet(ApiEndPointConstant.SpMajorCode.SpMajorCodesEndPoint)]
+        [HttpGet(ApiEndPointConstant.SpMajorCode.SpMajorCodeEndPoint)]
         [ProducesResponseType(typeof(SpMajorCodeResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllSpMajorCodes([FromQuery] SpMajorCodeFilter filter, [FromQuery] PagingModel pagingModel)
         {
@@ -40,7 +40,7 @@ namespace FPTAlumniConnect.API.Controllers
             return Ok(response);
         }
 
-        [HttpPatch(ApiEndPointConstant.SpMajorCode.SpMajorCodeEndPoint)]
+        [HttpPatch(ApiEndPointConstant.SpMajorCode.SpMajorCodesEndPoint)]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateSpMajorCodeInfo(int id, [FromBody] SpMajorCodeInfo request)
         {

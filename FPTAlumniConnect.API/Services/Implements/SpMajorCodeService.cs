@@ -18,7 +18,19 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewSpMajorCode(SpMajorCodeInfo request)
         {
+            // Check if Major already has this name
+            SpMajorCode existingMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
+                predicate: s => s.MajorId == request.MajorId && s.MajorName == request.MajorName);
+
+            if (existingMajorCode != null)
+            {
+                throw new BadHttpRequestException("This Major already exists this name.");
+            }
+
             SpMajorCode newSpMajorCode = _mapper.Map<SpMajorCode>(request);
+            newSpMajorCode.CreatedAt = DateTime.Now;
+            newSpMajorCode.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+
             await _unitOfWork.GetRepository<SpMajorCode>().InsertAsync(newSpMajorCode);
 
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -39,6 +51,15 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateSpMajorCodeInfo(int id, SpMajorCodeInfo request)
         {
+            // Check if Major already has this name
+            SpMajorCode existingMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
+                predicate: s => s.MajorId == request.MajorId && s.MajorName == request.MajorName);
+
+            if (existingMajorCode != null)
+            {
+                throw new BadHttpRequestException("This Major already exists!");
+            }
+
             SpMajorCode spMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
                 predicate: x => x.SpMajorId.Equals(id)) ??
                 throw new BadHttpRequestException("SpMajorCodeNotFound");
