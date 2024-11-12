@@ -49,16 +49,20 @@ public partial class AlumniConnectContext : DbContext
 
     public virtual DbSet<Schedule> Schedules { get; set; }
 
+    public virtual DbSet<SkillJob> SkillJobs { get; set; }
+
     public virtual DbSet<SoicalLink> SoicalLinks { get; set; }
 
     public virtual DbSet<SpMajorCode> SpMajorCodes { get; set; }
 
+    public virtual DbSet<TagJob> TagJobs { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserJoinEvent> UserJoinEvents { get; set; }
-
+    public DbSet<Notification> Notifications { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;User Id=sa;Password=123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,8 +90,24 @@ public partial class AlumniConnectContext : DbContext
             entity.HasOne(d => d.Post).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.PostId)
                 .HasConstraintName("FK__Comments__PostID__1F98B2C1");
+            entity.Property(e => e.Status)
+    .HasDefaultValue(true);
         });
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
 
+            entity.HasOne<User>()
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId);
+            entity.Property(e => e.Message)
+                  .IsRequired()
+                  .HasMaxLength(500);
+            entity.Property(e => e.Timestamp)
+                  .HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.IsRead)
+                  .HasDefaultValue(false);
+        }); 
         modelBuilder.Entity<Cv>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__CV__3214EC07F4EB68AB");
@@ -98,8 +118,31 @@ public partial class AlumniConnectContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
-            entity.Property(e => e.Cv1).HasColumnName("CV");
-            entity.Property(e => e.Type).HasMaxLength(255);
+            entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.Address).HasMaxLength(255);
+            entity.Property(e => e.Birthday)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Gender).HasMaxLength(255);
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.Phone).HasMaxLength(255);
+            entity.Property(e => e.City).HasMaxLength(255);
+            entity.Property(e => e.Company).HasMaxLength(255);
+            entity.Property(e => e.PrimaryDuties).HasMaxLength(255);
+            entity.Property(e => e.JobLevel).HasMaxLength(255);
+            entity.Property(e => e.StartAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EndAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Language).HasMaxLength(255);
+            entity.Property(e => e.LanguageLevel).HasMaxLength(255);
+            entity.Property(e => e.MinSalary).HasMaxLength(255);
+            entity.Property(e => e.MaxSalary).HasMaxLength(255);
+            entity.Property(e => e.IsDeal)
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("isDeal");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -145,18 +188,21 @@ public partial class AlumniConnectContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.EventHolderId).HasColumnName("EventHolderID");
             entity.Property(e => e.EventName).HasMaxLength(255);
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+            entity.Property(e => e.Status)
+    .HasDefaultValue(false); 
 
             entity.HasOne(d => d.Organizer).WithMany(p => p.Events)
                 .HasForeignKey(d => d.OrganizerId)
                 .HasConstraintName("FK__Events__Organize__02084FDA");
+
         });
+
 
         modelBuilder.Entity<GroupChat>(entity =>
         {
@@ -241,9 +287,12 @@ public partial class AlumniConnectContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.JobTitle).HasMaxLength(255);
             entity.Property(e => e.Location).HasMaxLength(255);
             entity.Property(e => e.MajorId).HasColumnName("MajorID");
-            entity.Property(e => e.Salary).HasMaxLength(255);
+            entity.Property(e => e.MinSalary).HasDefaultValueSql("((0))");
+            entity.Property(e => e.MaxSalary).HasDefaultValueSql("((0))");
+            entity.Property(e => e.Status).HasDefaultValue(false);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Time).HasColumnType("datetime");
             entity.Property(e => e.UpdatedAt)
@@ -349,9 +398,12 @@ public partial class AlumniConnectContext : DbContext
 
             entity.Property(e => e.PostId).HasColumnName("PostID");
             entity.Property(e => e.AuthorId).HasColumnName("AuthorID");
+            entity.Property(e => e.MajorId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Content).HasMaxLength(255);
+            entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.IsPrivate).HasDefaultValueSql("((0))");
             entity.Property(e => e.Status).HasMaxLength(255);
@@ -379,6 +431,7 @@ public partial class AlumniConnectContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
+            entity.Property(e => e.TypeOfReport).HasMaxLength(255);
             entity.Property(e => e.PostId).HasColumnName("PostID");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -560,6 +613,46 @@ public partial class AlumniConnectContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserJoinEvents)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__UserJoinE__UserI__0B91BA14");
+        });
+
+        modelBuilder.Entity<TagJob>(entity =>
+        {
+            entity.HasKey(e => e.TagJobId);
+
+            entity.ToTable("TagJob");
+            entity.Property(e => e.TagJobId);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
+            entity.Property(e => e.Tag).HasMaxLength(255);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+            entity.HasOne(d => d.Cv).WithMany(p => p.TagJobs)
+                .HasForeignKey(d => d.CvID);
+        });
+
+        modelBuilder.Entity<SkillJob>(entity =>
+        {
+            entity.HasKey(e => e.SkillJobId);
+
+            entity.ToTable("SkillJob");
+            entity.Property(e => e.SkillJobId);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
+            entity.Property(e => e.Skill).HasMaxLength(255);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+            entity.HasOne(d => d.Cv).WithMany(p => p.SkillJobs)
+                .HasForeignKey(d => d.CvID);
         });
 
         OnModelCreatingPartial(modelBuilder);

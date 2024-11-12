@@ -12,16 +12,13 @@ public partial class Event
     public string? Img { get; set; }
 
     public string? Description { get; set; }
+    public bool? Status { get; set; }
 
     public DateTime StartDate { get; set; }
 
     public DateTime EndDate { get; set; }
 
-    public int? EventHolderId { get; set; }
-
     public string? Location { get; set; }
-
-    public int? OrganizerId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -30,8 +27,7 @@ public partial class Event
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
-
+    public int? OrganizerId { get; set; }
     public virtual User? Organizer { get; set; }
-
     public virtual ICollection<UserJoinEvent> UserJoinEvents { get; set; } = new List<UserJoinEvent>();
 }

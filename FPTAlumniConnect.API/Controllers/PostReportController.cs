@@ -3,6 +3,7 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.PostReport;
+using FPTAlumniConnect.API.Services.Implements;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -26,7 +27,7 @@ namespace FPTAlumniConnect.API.Controllers
 
         [HttpPost(ApiEndPointConstant.PostReport.PostReportsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateNewReport([FromBody] PostReportFilter request)
+        public async Task<IActionResult> CreateNewReport([FromBody] PostReportInfo request)
         {
             var id = await _postReportService.CreateNewReport(request);
             return CreatedAtAction(nameof(GetReportById), new { id }, id);
@@ -38,6 +39,15 @@ namespace FPTAlumniConnect.API.Controllers
         {
             var response = await _postReportService.ViewAllReport(filter, pagingModel);
             return Ok(response);
+        }
+
+        [HttpPatch(ApiEndPointConstant.PostReport.PostReportEndPoint)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateReportInfo(int id, [FromBody] PostReportInfo request)
+        {
+            var isSuccessful = await _postReportService.UpdateReportInfo(id, request);
+            if (!isSuccessful) return Ok("UpdateStatusFailed");
+            return Ok("UpdateStatusSuccess");
         }
     }
 }

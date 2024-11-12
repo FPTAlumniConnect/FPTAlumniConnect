@@ -2,7 +2,6 @@
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.JobPost;
-using FPTAlumniConnect.BusinessTier.Payload.Post;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
@@ -44,13 +43,15 @@ namespace FPTAlumniConnect.API.Services.Implements
                 throw new BadHttpRequestException("JobPostNotFound");
 
             jobPost.JobDescription = string.IsNullOrEmpty(request.JobDescription) ? jobPost.JobDescription : request.JobDescription;
-            jobPost.Salary = request.Salary;
-            jobPost.Location = request.Location;
-            jobPost.Requirements = request.Requirements;
-            jobPost.Benefits = request.Benefits;
+            jobPost.Requirements = string.IsNullOrEmpty(request.Requirements) ? jobPost.Requirements : request.Requirements;
+            jobPost.Location = string.IsNullOrEmpty(request.Location) ? jobPost.Location : request.Location;
+            jobPost.Benefits = string.IsNullOrEmpty(request.Benefits) ? jobPost.Benefits : request.Benefits;
+            jobPost.JobTitle = string.IsNullOrEmpty(request.JobTitle) ? jobPost.JobTitle : request.JobTitle;
+            jobPost.MinSalary = request.MinSalary;
+            jobPost.MaxSalary = request.MaxSalary;
             jobPost.Time = request.Time;
             jobPost.Status = request.Status;
-            jobPost.Email = request.Email;
+            jobPost.Email = string.IsNullOrEmpty(request.Email) ? jobPost.Email : request.Email;
             jobPost.MajorId = request.MajorId;
             jobPost.UpdatedAt = DateTime.Now;
             jobPost.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;

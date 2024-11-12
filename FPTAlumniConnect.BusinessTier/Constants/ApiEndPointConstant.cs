@@ -54,6 +54,16 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string CVsEndPoint = ApiEndpoint + "/cvs";
             public const string CVEndPoint = CVsEndPoint + "/{id}";
         }
+        public static class Skill
+        {
+            public const string SkillsEndPoint = ApiEndpoint + "/skills";
+            public const string SkillEndPoint = SkillsEndPoint + "/{id}";
+        }
+        public static class Tag
+        {
+            public const string TagsEndPoint = ApiEndpoint + "/tags";
+            public const string TagEndPoint = TagsEndPoint + "/{id}";
+        }
         public static class Event
         {
             public const string EventsEndPoint = ApiEndpoint + "/events"; 
@@ -82,8 +92,8 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         }
         public static class MajorCode
         {
-            public const string MajorCodeEndPoint = ApiEndpoint + "/majorcodes";
-            public const string MajorCodesEndPoint = MajorCodeEndPoint + "/{id}";
+            public const string MajorCodesEndPoint = ApiEndpoint + "/majorcodes";
+            public const string MajorCodeEndPoint = MajorCodesEndPoint + "/{id}";
         }
         public static class SpMajorCode
         {
@@ -92,18 +102,28 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         }
         public static class JobPost
         {
-            public const string JobPostEndPoint = ApiEndpoint + "/jobposts";
-            public const string JobPostsEndPoint = JobPostEndPoint + "/{id}";
+            public const string JobPostsEndPoint = ApiEndpoint + "/jobposts";
+            public const string JobPostEndPoint = JobPostsEndPoint + "/{id}";
         }
         public static class JobApplication
         {
-            public const string JobApplicationEndPoint = ApiEndpoint + "/jobapplications";
-            public const string JobApplicationsEndPoint = JobApplicationEndPoint + "/{id}";
+            public const string JobApplicationsEndPoint = ApiEndpoint + "/jobapplications";
+            public const string JobApplicationEndPoint = JobApplicationsEndPoint + "/{id}";
         }
         public static class SocialLink
         {
             public const string SocialLinkEndPoint = "social-link/{id}";
             public const string SocialLinksEndPoint = "social-links";
+        }
+        public static class MessageGroupChat
+        {
+            public const string MessagesEndPoint = ApiEndpoint + "/messages-group-chat"; 
+            public const string MessageEndPoint = MessagesEndPoint + "/{id}"; 
+        }
+        public static class GroupChat
+        {
+            public const string GroupChatsEndPoint = ApiEndpoint + "/groupchats";
+            public const string GroupChatEndPoint = GroupChatsEndPoint + "/{id}";
         }
     }
 }

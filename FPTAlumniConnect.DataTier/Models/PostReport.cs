@@ -11,6 +11,8 @@ public partial class PostReport
 
     public int? UserId { get; set; }
 
+    public string? TypeOfReport { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }

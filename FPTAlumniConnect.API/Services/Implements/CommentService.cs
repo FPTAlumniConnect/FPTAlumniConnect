@@ -19,15 +19,53 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewComment(CommentInfo request)
         {
+            ValidateCommentInfo(request);
+
             Comment newComment = _mapper.Map<Comment>(request);
-
             await _unitOfWork.GetRepository<Comment>().InsertAsync(newComment);
-
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
-
             return newComment.CommentId;
         }
+
+        private void ValidateCommentInfo(CommentInfo request)
+        {
+            List<string> errors = new List<string>();
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request), "Comment information cannot be null");
+            }
+
+            if (request.PostId == null)
+            {
+                errors.Add("PostId is required");
+            }
+
+            if (request.AuthorId == null)
+            {
+                errors.Add("AuthorId is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.Content))
+            {
+                errors.Add("Content is required");
+            }
+
+            // Nếu Type được cung cấp, kiểm tra nó không được trống
+            if (request.Type != null && string.IsNullOrWhiteSpace(request.Type))
+            {
+                errors.Add("Type cannot be empty if provided");
+            }
+
+            // ParentCommentId có thể null nên không cần validate
+
+            if (errors.Any())
+            {
+                throw new BadHttpRequestException($"Validation failed: {string.Join(", ", errors)}");
+            }
+        }
+
 
         public async Task<CommentReponse> GetCommentById(int id)
         {
@@ -44,8 +82,20 @@ namespace FPTAlumniConnect.API.Services.Implements
             Comment comment = await _unitOfWork.GetRepository<Comment>().SingleOrDefaultAsync(
                 predicate: x => x.CommentId.Equals(id)) ??
                 throw new BadHttpRequestException("CommentNotFound");
-
+            if (request.PostId.HasValue)
+            {
+                comment.PostId = request.PostId.Value;
+            }
+            if (request.AuthorId.HasValue)
+            {
+                comment.AuthorId = request.AuthorId.Value;
+            }
+            if (request.ParentCommentId.HasValue)
+            {
+                comment.ParentCommentId = request.ParentCommentId.Value;
+            }
             comment.Content = string.IsNullOrEmpty(request.Content) ? comment.Content : request.Content;
+            comment.Type = string.IsNullOrEmpty(request.Type) ? comment.Type : request.Type;
             comment.UpdatedAt = DateTime.Now;
             comment.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
@@ -56,14 +106,39 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<IPaginate<CommentReponse>> ViewAllComment(CommentFilter filter, PagingModel pagingModel)
         {
-            IPaginate<CommentReponse> response = await _unitOfWork.GetRepository<Comment>().GetPagingListAsync(
+            // Lấy danh sách comment từ repository
+            var comments = await _unitOfWork.GetRepository<Comment>().GetPagingListAsync(
                 selector: x => _mapper.Map<CommentReponse>(x),
                 filter: filter,
                 orderBy: x => x.OrderBy(x => x.CreatedAt),
                 page: pagingModel.page,
                 size: pagingModel.size
-                );
-            return response;
+            );
+
+            foreach (var commentResponse in comments.Items)
+            {
+                // Kiểm tra parentCommentId cho mỗi comment
+                if (commentResponse.ParentCommentId.HasValue)
+                {
+                    // Tìm comment cha dựa trên parentCommentId
+                    var parentComment = await _unitOfWork.GetRepository<Comment>()
+                        .FindAsync(x => x.CommentId == commentResponse.ParentCommentId.Value);
+
+                    // Kiểm tra xem comment cha có tồn tại không
+                    if (parentComment == null)
+                    {
+                        throw new Exception($"Không tìm thấy comment [{commentResponse.CommentId}] có CommentId = {commentResponse.ParentCommentId}");
+                    }
+
+                    // Kiểm tra postId của comment cha và con
+                    if (parentComment.PostId != commentResponse.PostId)
+                    {
+                        throw new Exception($"postId của [CommentId = {commentResponse.CommentId}](postId: {commentResponse.PostId}) không khớp với postId của comment cha [CommentId = {parentComment.CommentId}](postId: {parentComment.PostId})");
+
+                    }
+                }
+            }
+            return comments;
         }
     }
 }

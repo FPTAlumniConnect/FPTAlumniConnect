@@ -10,7 +10,7 @@ namespace FPTAlumniConnect.API.Mappers
         public EventModule()
         {
             CreateMap<Event, GetEventResponse>();
-            CreateMap<Event, EventInfo>();
+            CreateMap<EventInfo, Event>();
         }
     }
 }

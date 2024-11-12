@@ -12,6 +12,7 @@ public partial class Comment
     public int? AuthorId { get; set; }
 
     public string Content { get; set; } = null!;
+    public bool? Status { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

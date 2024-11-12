@@ -1,5 +1,6 @@
 ﻿using FirebaseAdmin;
 using FPTAlumniConnect.API.Services.Implements;
+using FPTAlumniConnect.API.Services.Implements.FPTAlumniConnect.API.Services.Implements;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Repository.Implement;
@@ -53,6 +54,8 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IMentorshipService, MentorshipService>();
             services.AddScoped<ICVService, CVService>();
+            services.AddScoped<ISkillService, SkillService>();
+            services.AddScoped<ITagService, TagService>();
             services.AddScoped<IMajorCodeService, MajorCodeService>();
             services.AddScoped<ISpMajorCodeService, SpMajorCodeService>();
             services.AddScoped<IJobPostService, JobPostService>();
@@ -63,7 +66,11 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IPrivacySettingService, PrivacySettingService>();
             services.AddScoped<ISocialLinkService, SocialLinkService>();
             services.AddScoped<IEducationHistoryService, EducationHistoryService>();
+            services.AddScoped<IMessageGroupChatService, MessageGroupChatService>();
+            services.AddScoped<IGroupChatService, GroupChatService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
+        
             return services;
         }
 

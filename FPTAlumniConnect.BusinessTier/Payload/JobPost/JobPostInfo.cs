@@ -5,9 +5,13 @@ namespace FPTAlumniConnect.BusinessTier.Payload.JobPost
 {
     public class JobPostInfo
     {
+        public string JobTitle { get; set; } = null!;
+
         public string JobDescription { get; set; } = null!;
 
-        public string? Salary { get; set; }
+        public int? MinSalary { get; set; }
+
+        public int? MaxSalary { get; set; }
 
         public string? Location { get; set; }
 

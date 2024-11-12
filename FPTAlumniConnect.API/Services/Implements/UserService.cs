@@ -97,7 +97,8 @@ namespace FPTAlumniConnect.API.Services.Implements
             user.FirstName = string.IsNullOrEmpty(request.FirstName) ? user.FirstName : request.FirstName;
             user.Email = string.IsNullOrEmpty(request.Email) ? user.Email : request.Email;
             user.LastName = string.IsNullOrEmpty(request.LastName) ? user.LastName : request.LastName;
-
+            user.UpdatedAt = DateTime.Now;
+            user.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
             _unitOfWork.GetRepository<User>().UpdateAsync(user);
             bool isSuccesful = await _unitOfWork.CommitAsync() > 0;
             return isSuccesful;

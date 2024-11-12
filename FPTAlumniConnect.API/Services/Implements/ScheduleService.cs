@@ -44,10 +44,24 @@ namespace FPTAlumniConnect.API.Services.Implements
             Schedule schedule = await _unitOfWork.GetRepository<Schedule>().SingleOrDefaultAsync(
                 predicate: x => x.ScheduleId.Equals(id)) ??
                 throw new BadHttpRequestException("ScheduleNotFound");
-
+            if (request.MentorId.HasValue)
+            {
+                schedule.MentorId = request.MentorId.Value;
+            }
+            if (request.MentorShipId.HasValue)
+            {
+                schedule.MentorShipId = request.MentorShipId.Value;
+            }
             schedule.Content = string.IsNullOrEmpty(request.Content) ? schedule.Content : request.Content;
-            schedule.StartTime = request.StartTime;
-            schedule.EndTime = request.EndTime;
+            if (request.StartTime.HasValue)
+            {
+                schedule.StartTime = request.StartTime.Value;
+            }
+            if (request.EndTime.HasValue)
+            {
+                schedule.EndTime = request.EndTime.Value;
+            }
+            schedule.Status = string.IsNullOrEmpty(request.Status) ? schedule.Status : request.Status;
             schedule.UpdatedAt = DateTime.Now;
             schedule.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
