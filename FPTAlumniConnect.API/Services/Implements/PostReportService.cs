@@ -57,7 +57,7 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<IPaginate<PostReportReponse>> ViewAllReport(PostReportFilter filter, PagingModel pagingModel)
         {
-            IPaginate<PostReportReponse> response = await _unitOfWork.GetRepository<Post>().GetPagingListAsync(
+            IPaginate<PostReportReponse> response = await _unitOfWork.GetRepository<PostReport>().GetPagingListAsync(
                 selector: x => _mapper.Map<PostReportReponse>(x),
                 filter: filter,
                 orderBy: x => x.OrderBy(x => x.CreatedAt),

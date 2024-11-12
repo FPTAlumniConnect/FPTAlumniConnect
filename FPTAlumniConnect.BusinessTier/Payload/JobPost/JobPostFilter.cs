@@ -9,6 +9,10 @@ namespace FPTAlumniConnect.BusinessTier.Payload.JobPost
 
         public int? MajorId { get; set; }
 
+        public int? MinSalary { get; set; }
+
+        public int? MaxSalary { get; set; }
+
         public string? Location { get; set; }
 
         public string? Status { get; set; }

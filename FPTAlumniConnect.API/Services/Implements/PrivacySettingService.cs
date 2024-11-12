@@ -44,8 +44,6 @@ namespace FPTAlumniConnect.API.Services.Implements
             PrivacySetting privacySetting = await _unitOfWork.GetRepository<PrivacySetting>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id)) ??
                 throw new BadHttpRequestException("PrivacySettingNotFound");
-
-            privacySetting.UserId = request.UserId ?? privacySetting.UserId;
             privacySetting.VisibleToEducationHistory = request.VisibleToEducationHistory ?? privacySetting.VisibleToEducationHistory;
             privacySetting.VisibleToMajor = request.VisibleToMajor ?? privacySetting.VisibleToMajor;
             privacySetting.VisibleToEmail = request.VisibleToEmail ?? privacySetting.VisibleToEmail;

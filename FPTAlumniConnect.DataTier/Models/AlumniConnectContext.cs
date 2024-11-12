@@ -60,9 +60,9 @@ public partial class AlumniConnectContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserJoinEvent> UserJoinEvents { get; set; }
-
+    public DbSet<Notification> Notifications { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;User Id=sa;Password=12345;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,7 +93,21 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.Status)
     .HasDefaultValue(true);
         });
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
 
+            entity.HasOne<User>()
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId);
+            entity.Property(e => e.Message)
+                  .IsRequired()
+                  .HasMaxLength(500);
+            entity.Property(e => e.Timestamp)
+                  .HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.IsRead)
+                  .HasDefaultValue(false);
+        }); 
         modelBuilder.Entity<Cv>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__CV__3214EC07F4EB68AB");
@@ -384,9 +398,12 @@ public partial class AlumniConnectContext : DbContext
 
             entity.Property(e => e.PostId).HasColumnName("PostID");
             entity.Property(e => e.AuthorId).HasColumnName("AuthorID");
+            entity.Property(e => e.MajorId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Content).HasMaxLength(255);
+            entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.IsPrivate).HasDefaultValueSql("((0))");
             entity.Property(e => e.Status).HasMaxLength(255);
@@ -603,7 +620,7 @@ public partial class AlumniConnectContext : DbContext
             entity.HasKey(e => e.TagJobId);
 
             entity.ToTable("TagJob");
-
+            entity.Property(e => e.TagJobId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -623,7 +640,7 @@ public partial class AlumniConnectContext : DbContext
             entity.HasKey(e => e.SkillJobId);
 
             entity.ToTable("SkillJob");
-
+            entity.Property(e => e.SkillJobId);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

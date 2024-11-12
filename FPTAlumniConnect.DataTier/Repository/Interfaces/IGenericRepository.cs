@@ -7,7 +7,8 @@ namespace FPTAlumniConnect.DataTier.Repository.Interfaces
     public interface IGenericRepository<T> : IDisposable where T : class
     {
         #region Get Async
-
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);
+        Task<T?> FindAsync(Expression<Func<T, bool>> predicate);
         Task<T> AsQueryableAsync(
             Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,

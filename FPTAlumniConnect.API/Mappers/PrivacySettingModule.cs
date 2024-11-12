@@ -8,7 +8,8 @@ namespace FPTAlumniConnect.API.Mappers
     {
         public PrivacySettingModule() 
         { 
-            CreateMap<PrivacySetting, GetPrivacySettingResponse>();        
+            CreateMap<PrivacySetting, GetPrivacySettingResponse>();
+            CreateMap<PrivacySettingInfo, PrivacySetting>();
         }
     }
 }

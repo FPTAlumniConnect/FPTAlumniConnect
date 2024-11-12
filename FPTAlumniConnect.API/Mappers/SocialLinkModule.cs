@@ -9,6 +9,7 @@ namespace FPTAlumniConnect.API.Mappers
         public SocialLinkModule() 
         {
             CreateMap<SoicalLink, GetSocialLinkResponse>();
+            CreateMap<SocialLinkInfo, SoicalLink>();
         }
     }
 }

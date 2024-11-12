@@ -8,8 +8,8 @@ namespace FPTAlumniConnect.API.Mappers
     {
         public JobPostModule()
         {
-            CreateMap<JobPost, JobPostModule>();
-            CreateMap<JobPostModule, JobPost>();
+            CreateMap<JobPost, JobPostResponse>();
+            CreateMap<JobPostInfo, JobPost>();
         }
     }
 }

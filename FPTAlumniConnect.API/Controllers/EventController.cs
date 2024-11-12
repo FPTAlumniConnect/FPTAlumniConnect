@@ -16,7 +16,7 @@ namespace FPTAlumniConnect.API.Controllers
             {
                 _eventService = eventService;
             }
-            [HttpPost(ApiEndPointConstant.Event.EventEndPoint)]
+            [HttpPost(ApiEndPointConstant.Event.EventsEndPoint)]
             [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
             public async Task<IActionResult> CreateNewEvent([FromBody] EventInfo request)
             {
