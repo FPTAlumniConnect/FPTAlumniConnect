@@ -74,7 +74,5 @@ namespace FPTAlumniConnect.DataTier.Repository.Interfaces
         void DeleteAsync(T entity);
         void DeleteRangeAsync(IEnumerable<T> entities);
 
-        Task<T> FindAsync(Expression<Func<T, bool>> predicate);
-
     }
 }
