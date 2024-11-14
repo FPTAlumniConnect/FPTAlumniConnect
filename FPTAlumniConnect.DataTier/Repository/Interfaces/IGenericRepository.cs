@@ -73,6 +73,6 @@ namespace FPTAlumniConnect.DataTier.Repository.Interfaces
 
         void DeleteAsync(T entity);
         void DeleteRangeAsync(IEnumerable<T> entities);
-
+        Task<IEnumerable<T>> GetAllAsync();
     }
 }

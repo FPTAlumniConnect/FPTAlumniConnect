@@ -17,9 +17,16 @@ namespace FPTAlumniConnect.API.Controllers
 
         [HttpPost(ApiEndPointConstant.User.UserLoginEndPoint)]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> LoginUser(LoginFirebaseRequest request)
+        public async Task<IActionResult> LoginGoogleUser(LoginFirebaseRequest request)
         {
             var response = await _userService.LoginUser(request);
+            return Ok(response);
+        }
+        [HttpPost(ApiEndPointConstant.Authentication.Login)]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login(LoginRequest request)
+        {
+            var response = await _userService.Login(request);
             return Ok(response);
         }
     }

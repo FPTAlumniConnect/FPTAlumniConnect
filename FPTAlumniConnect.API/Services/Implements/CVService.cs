@@ -68,8 +68,8 @@ namespace FPTAlumniConnect.API.Services.Implements
             }
             cV.Language = string.IsNullOrEmpty(request.Language) ? cV.Language : request.Language;
             cV.LanguageLevel = string.IsNullOrEmpty(request.LanguageLevel) ? cV.LanguageLevel : request.LanguageLevel;
-            cV.MinSalary = string.IsNullOrEmpty(request.MinSalary) ? cV.MinSalary : request.MinSalary;
-            cV.MaxSalary = string.IsNullOrEmpty(request.MaxSalary) ? cV.MaxSalary : request.MaxSalary;
+            cV.MinSalary = request.MinSalary;
+            cV.MaxSalary = request.MaxSalary;
             if (request.IsDeal.HasValue)
             {
                 cV.IsDeal = request.IsDeal.Value;

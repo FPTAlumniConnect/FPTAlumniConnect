@@ -167,5 +167,10 @@ namespace FPTAlumniConnect.DataTier.Repository.Implement
 
 
         #endregion
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbContext.Set<T>().ToListAsync();
+        }
+       
     }
 }

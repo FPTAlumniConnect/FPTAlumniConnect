@@ -91,7 +91,7 @@ namespace FPTAlumniConnect.API.Extensions
                         ValidateAudience = false,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes("AlumniConnect"))
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes("AlumniConnectSuperSecretKey123456"))
                     };
                 });
             return services;

@@ -19,7 +19,7 @@ public partial class User
 
     public string? ProfilePicture { get; set; }
 
-    public int? RoleId { get; set; }
+    public int RoleId { get; set; }
 
     public int? MajorId { get; set; }
 
