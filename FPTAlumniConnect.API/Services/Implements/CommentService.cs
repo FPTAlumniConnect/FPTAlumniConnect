@@ -20,7 +20,6 @@ namespace FPTAlumniConnect.API.Services.Implements
         public async Task<int> CreateNewComment(CommentInfo request)
         {
             ValidateCommentInfo(request);
-
             Comment newComment = _mapper.Map<Comment>(request);
             await _unitOfWork.GetRepository<Comment>().InsertAsync(newComment);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

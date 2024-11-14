@@ -13,5 +13,6 @@ namespace FPTAlumniConnect.API.Services.Interfaces
         Task<bool> UpdateUserInfo(int id, UserInfo request);
         Task<GetUserResponse> GetUserById(int id);
         Task<LoginResponse> LoginUser(LoginFirebaseRequest request);
+        Task<LoginResponse> Login(LoginRequest loginRequest);
     }
 }

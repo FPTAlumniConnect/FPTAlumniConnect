@@ -138,8 +138,8 @@ public partial class AlumniConnectContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Language).HasMaxLength(255);
             entity.Property(e => e.LanguageLevel).HasMaxLength(255);
-            entity.Property(e => e.MinSalary).HasMaxLength(255);
-            entity.Property(e => e.MaxSalary).HasMaxLength(255);
+            entity.Property(e => e.MinSalary).HasDefaultValueSql("((0))");
+            entity.Property(e => e.MaxSalary).HasDefaultValueSql("((0))");
             entity.Property(e => e.IsDeal)
                 .HasDefaultValueSql("((0))")
                 .HasColumnName("isDeal");

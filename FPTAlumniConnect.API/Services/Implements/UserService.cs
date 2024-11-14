@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Azure.Messaging;
 using FirebaseAdmin.Auth;
 using FPTAlumniConnect.API.Services.Interfaces;
@@ -8,6 +9,7 @@ using FPTAlumniConnect.BusinessTier.Utils;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
+using System.Linq.Expressions;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
@@ -48,7 +50,38 @@ namespace FPTAlumniConnect.API.Services.Implements
             GetUserResponse result = _mapper.Map<GetUserResponse>(user);
             return result;
         }
+        public async Task<LoginResponse> Login(LoginRequest loginRequest)
+        {
+            Expression<Func<User, bool>> searchFilter = p =>
+                p.Email.Equals(loginRequest.Email) &&
+                p.PasswordHash.Equals(loginRequest.Password);
 
+            User user = await _unitOfWork.GetRepository<User>()
+                .SingleOrDefaultAsync(predicate: searchFilter);
+            if (user == null)
+            {
+                return new LoginResponse
+                {
+                    Message = "Invalid email or password",
+                    AccessToken = null,
+                    UserInfo = null
+                };
+            }
+            var token = JwtUtil.GenerateJwtToken(user);
+
+            LoginResponse loginResponse = new LoginResponse()
+            {
+                Message = "Login success",
+                AccessToken = token,
+                UserInfo = new UserResponse()
+                {
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    RoleId=user.RoleId
+                }
+            };
+            return loginResponse;
+        }
 
         public async Task<LoginResponse> LoginUser(LoginFirebaseRequest request)
         {
