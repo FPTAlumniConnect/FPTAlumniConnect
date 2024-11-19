@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FPTAlumniConnect.API.Services.Implements.FPTAlumniConnect.API.Services.Implements;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.Comment;
+using FPTAlumniConnect.BusinessTier.Payload.Notification;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
@@ -10,21 +12,52 @@ namespace FPTAlumniConnect.API.Services.Implements
 {
     public class CommentService : BaseService<CommentService>, ICommentService
     {
+        private readonly IPostService _postService;
+        private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
 
-        public CommentService(IUnitOfWork<AlumniConnectContext> unitOfWork, ILogger<CommentService> logger, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public CommentService(
+            IUnitOfWork<AlumniConnectContext> unitOfWork,
+            ILogger<CommentService> logger,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            IPostService postService,
+            INotificationService notificationService,
+            IUserService userService)
+            : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
-
+            _postService = postService;
+            _notificationService = notificationService;
+            _userService = userService;
         }
 
         public async Task<int> CreateNewComment(CommentInfo request)
         {
             ValidateCommentInfo(request);
-
             Comment newComment = _mapper.Map<Comment>(request);
             await _unitOfWork.GetRepository<Comment>().InsertAsync(newComment);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
+
+            //find post
+            var post = await _postService.GetPostById(request.PostId);
+            if (post == null || post.AuthorId == null)
+                throw new BadHttpRequestException("find post failed");
+
+            //Prepare notifcation
+            var commenter = await _userService.GetUserById(request.AuthorId);
+            if (commenter == null)
+                throw new BadHttpRequestException("prepare notificattion failed");
+            var notificationPayload = new NotificationPayload
+            {
+                UserId = post.AuthorId.Value, // Tác giả bài viết
+                Message = $"{commenter.FirstName} đã bình luận vào bài viết của bạn: {post.Title}",
+                IsRead = false
+            };
+
+            //send notification
+            await _notificationService.SendNotificationAsync(notificationPayload);
+
             return newComment.CommentId;
         }
 
@@ -36,30 +69,10 @@ namespace FPTAlumniConnect.API.Services.Implements
             {
                 throw new ArgumentNullException(nameof(request), "Comment information cannot be null");
             }
-
-            if (request.PostId == null)
-            {
-                errors.Add("PostId is required");
-            }
-
-            if (request.AuthorId == null)
-            {
-                errors.Add("AuthorId is required");
-            }
-
             if (string.IsNullOrWhiteSpace(request.Content))
             {
                 errors.Add("Content is required");
             }
-
-            // Nếu Type được cung cấp, kiểm tra nó không được trống
-            if (request.Type != null && string.IsNullOrWhiteSpace(request.Type))
-            {
-                errors.Add("Type cannot be empty if provided");
-            }
-
-            // ParentCommentId có thể null nên không cần validate
-
             if (errors.Any())
             {
                 throw new BadHttpRequestException($"Validation failed: {string.Join(", ", errors)}");
@@ -82,18 +95,6 @@ namespace FPTAlumniConnect.API.Services.Implements
             Comment comment = await _unitOfWork.GetRepository<Comment>().SingleOrDefaultAsync(
                 predicate: x => x.CommentId.Equals(id)) ??
                 throw new BadHttpRequestException("CommentNotFound");
-            if (request.PostId.HasValue)
-            {
-                comment.PostId = request.PostId.Value;
-            }
-            if (request.AuthorId.HasValue)
-            {
-                comment.AuthorId = request.AuthorId.Value;
-            }
-            if (request.ParentCommentId.HasValue)
-            {
-                comment.ParentCommentId = request.ParentCommentId.Value;
-            }
             comment.Content = string.IsNullOrEmpty(request.Content) ? comment.Content : request.Content;
             comment.Type = string.IsNullOrEmpty(request.Type) ? comment.Type : request.Type;
             comment.UpdatedAt = DateTime.Now;

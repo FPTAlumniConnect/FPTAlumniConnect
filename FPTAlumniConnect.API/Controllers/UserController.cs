@@ -19,7 +19,7 @@ namespace FPTAlumniConnect.API.Controllers
 
         [HttpGet(ApiEndPointConstant.User.UserEndPoint)]
         [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateUser(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
             var response = await _userService.GetUserById(id);
             return Ok(response);

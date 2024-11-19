@@ -7,9 +7,13 @@
     using AutoMapper;
     using global::FPTAlumniConnect.BusinessTier.Payload.Notification;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using global::FPTAlumniConnect.BusinessTier.Payload.Comment;
 
     namespace FPTAlumniConnect.API.Services.Implements
     {
+        
         public class NotificationService : BaseService<NotificationService>, INotificationService
         {
             private readonly IHubContext<NotificationHub> _hubContext;
@@ -61,6 +65,7 @@
                 _unitOfWork.GetRepository<Notification>().UpdateAsync(notification);
                 return await _unitOfWork.CommitAsync() > 0;
             }
+          
         }
     }
 
