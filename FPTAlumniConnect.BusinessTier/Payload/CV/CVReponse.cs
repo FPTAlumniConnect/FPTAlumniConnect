@@ -37,9 +37,9 @@ namespace FPTAlumniConnect.BusinessTier.Payload.CV
 
         public string LanguageLevel { get; set; } = null!;
 
-        public string MinSalary { get; set; } = null!;
+        public int MinSalary { get; set; } 
 
-        public string MaxSalary { get; set; } = null!;
+        public int MaxSalary { get; set; }
 
         public bool? IsDeal { get; set; }
     }

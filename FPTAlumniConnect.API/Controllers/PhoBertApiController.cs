@@ -19,22 +19,15 @@ namespace FPTAlumniConnect.API.Controllers
         [HttpPost(ApiEndPointConstant.PhoBert.FindBestMatchingCVEndpoint)]
         [ProducesResponseType(typeof(int?), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> FindBestMatchingCV([FromBody] EmbeddingRequest jobDescription)
+        public async Task<IActionResult> FindBestMatchingCV(int idJobPost)
         {
-            var bestCvId = await _phoBertService.FindBestMatchingCV(jobDescription);
+            var bestCvId = await _phoBertService.RecommendCVForJobPostAsync(idJobPost);
             if (bestCvId == null)
             {
                 return NotFound("No matching CV found.");
             }
 
             return Ok(bestCvId);
-        }
-        [HttpPost("generateEmbedding")]
-        [ProducesResponseType(typeof(double[]), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GenerateEmbedding([FromBody] EmbeddingRequest text)
-        {
-            var embedding = await _phoBertService.GenerateEmbedding(text);
-            return Ok(embedding);
         }
     }
 }
