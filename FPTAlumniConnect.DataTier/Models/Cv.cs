@@ -40,7 +40,7 @@ public partial class Cv
     public int MinSalary { get; set; }
 
     public int MaxSalary { get; set; }
-    public string? Embedding { get; set; }
+
     public bool? IsDeal { get; set; }
 
     public DateTime? CreatedAt { get; set; }

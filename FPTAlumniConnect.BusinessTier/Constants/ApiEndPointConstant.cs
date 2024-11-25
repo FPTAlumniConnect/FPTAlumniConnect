@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,16 +54,19 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         {
             public const string CVsEndPoint = ApiEndpoint + "/cvs";
             public const string CVEndPoint = CVsEndPoint + "/{id}";
+            public const string CVUserEndPoint = CVsEndPoint + "/user/{id}";
         }
         public static class Skill
         {
             public const string SkillsEndPoint = ApiEndpoint + "/skills";
             public const string SkillEndPoint = SkillsEndPoint + "/{id}";
+            public const string SkillCVEndPoint = SkillsEndPoint + "/cv/{id}";
         }
         public static class Tag
         {
             public const string TagsEndPoint = ApiEndpoint + "/tags";
             public const string TagEndPoint = TagsEndPoint + "/{id}";
+            public const string TagCVEndPoint = TagsEndPoint + "/cv/{id}";
         }
         public static class Event
         {

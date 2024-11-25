@@ -51,6 +51,16 @@ namespace FPTAlumniConnect.API.Services.Implements
             return result;
         }
 
+        public async Task<TagJobReponse> GetTagByCvId(int id)
+        {
+            TagJob tag = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
+                predicate: x => x.CvID.Equals(id)) ??
+                throw new BadHttpRequestException("TagNotFound");
+
+            TagJobReponse result = _mapper.Map<TagJobReponse>(tag);
+            return result;
+        }
+
         public async Task<bool> UpdateTagInfo(int id, TagJobInfo request)
         {
             TagJob tag = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(

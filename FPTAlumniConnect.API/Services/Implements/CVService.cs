@@ -39,6 +39,16 @@ namespace FPTAlumniConnect.API.Services.Implements
             return result;
         }
 
+        public async Task<CVReponse> GetCVByUserId(int id)
+        {
+            Cv cV = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+                predicate: x => x.UserId.Equals(id)) ??
+                throw new BadHttpRequestException("CVNotFound");
+
+            CVReponse result = _mapper.Map<CVReponse>(cV);
+            return result;
+        }
+
         public async Task<bool> UpdateCVInfo(int id, CVInfo request)
         {
             Cv cV = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(

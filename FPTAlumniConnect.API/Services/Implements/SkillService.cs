@@ -2,6 +2,7 @@
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.SkillJob;
+using FPTAlumniConnect.BusinessTier.Payload.TagJob;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
@@ -37,6 +38,16 @@ namespace FPTAlumniConnect.API.Services.Implements
         {
             SkillJob skill = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
                 predicate: x => x.SkillJobId.Equals(id)) ??
+                throw new BadHttpRequestException("SkillNotFound");
+
+            SkillJobReponse result = _mapper.Map<SkillJobReponse>(skill);
+            return result;
+        }
+
+        public async Task<SkillJobReponse> GetSkillByCvId(int id)
+        {
+            SkillJob skill = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
+                predicate: x => x.CvID.Equals(id)) ??
                 throw new BadHttpRequestException("SkillNotFound");
 
             SkillJobReponse result = _mapper.Map<SkillJobReponse>(skill);
