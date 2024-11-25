@@ -25,6 +25,14 @@ namespace FPTAlumniConnect.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet(ApiEndPointConstant.Tag.TagCVEndPoint)]
+        [ProducesResponseType(typeof(TagJobReponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetTagByCvId(int id)
+        {
+            var response = await _tagService.GetTagByCvId(id);
+            return Ok(response);
+        }
+
         [HttpPost(ApiEndPointConstant.Tag.TagsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNewTag([FromBody] TagJobInfo request)

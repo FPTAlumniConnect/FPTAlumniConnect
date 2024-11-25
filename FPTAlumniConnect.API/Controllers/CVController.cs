@@ -24,6 +24,14 @@ namespace FPTAlumniConnect.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet(ApiEndPointConstant.CV.CVUserEndPoint)]
+        [ProducesResponseType(typeof(CVReponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCVByUserId(int id)
+        {
+            var response = await _cVService.GetCVByUserId(id);
+            return Ok(response);
+        }
+
         [HttpPost(ApiEndPointConstant.CV.CVsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNewCV([FromBody] CVInfo request)

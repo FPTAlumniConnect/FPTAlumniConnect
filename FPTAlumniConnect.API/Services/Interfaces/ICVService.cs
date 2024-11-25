@@ -10,5 +10,6 @@ namespace FPTAlumniConnect.API.Services.Interfaces
         Task<IPaginate<CVReponse>> ViewAllCV(CVFilter filter, PagingModel pagingModel);
         Task<bool> UpdateCVInfo(int id, CVInfo request);
         Task<CVReponse> GetCVById(int id);
+        Task<CVReponse> GetCVByUserId(int id);
     }
 }

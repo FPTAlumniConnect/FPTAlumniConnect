@@ -5,6 +5,8 @@ namespace FPTAlumniConnect.BusinessTier.Payload.CV
 {
     public class CVInfo
     {
+        public int UserId { get; set; }
+
         public string FullName { get; set; } = null!;
 
         public string Address { get; set; } = null!;

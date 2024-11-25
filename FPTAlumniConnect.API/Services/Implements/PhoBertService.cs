@@ -59,35 +59,35 @@ namespace FPTAlumniConnect.API.Services.Implements
         }
 
 
-        public async Task<int?> FindBestMatchingCV(EmbeddingRequest jobDescription)
-        {
-            var jobEmbedding = await GenerateEmbedding(jobDescription);
-
-            var cvRepository = _unitOfWork.GetRepository<Cv>();
-            var cvs = await cvRepository.GetAllAsync();
-
-            int? bestCvId = null;
-            double bestScore = -1.0;
-
-            foreach (var cv in cvs)
-            {
-                if (cv.Embedding != null)
-                {
-                    var cvEmbedding = JsonSerializer.Deserialize<double[]>(cv.Embedding);
-                    if (cvEmbedding != null)
-                    {
-                        var similarityScore = CalculateCosineSimilarity(jobEmbedding, cvEmbedding);
-                        if (similarityScore > bestScore)
-                        {
-                            bestScore = similarityScore;
-                            bestCvId = cv.Id;
-                        }
-                    }
-                }
-            }
-
-            return bestCvId;
-        }
+        //public async Task<int?> FindBestMatchingCV(EmbeddingRequest jobDescription)
+        //{
+        //    var jobEmbedding = await GenerateEmbedding(jobDescription);
+        //
+        //    var cvRepository = _unitOfWork.GetRepository<Cv>();
+        //    var cvs = await cvRepository.GetAllAsync();
+        //
+        //    int? bestCvId = null;
+        //    double bestScore = -1.0;
+        //
+        //    foreach (var cv in cvs)
+        //    {
+        //        if (cv.Embedding != null)
+        //        {
+        //            var cvEmbedding = JsonSerializer.Deserialize<double[]>(cv.Embedding);
+        //            if (cvEmbedding != null)
+        //            {
+        //                var similarityScore = CalculateCosineSimilarity(jobEmbedding, cvEmbedding);
+        //                if (similarityScore > bestScore)
+        //                {
+        //                    bestScore = similarityScore;
+        //                    bestCvId = cv.Id;
+        //                }
+        //            }
+        //        }
+        //    }
+        //
+        //    return bestCvId;
+        //}
 
         private double CalculateCosineSimilarity(double[] vecA, double[] vecB)
         {

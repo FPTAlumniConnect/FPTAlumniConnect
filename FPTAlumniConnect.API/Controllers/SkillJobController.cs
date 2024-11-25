@@ -25,6 +25,14 @@ namespace FPTAlumniConnect.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet(ApiEndPointConstant.Skill.SkillCVEndPoint)]
+        [ProducesResponseType(typeof(SkillJobReponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSkillByCvId(int id)
+        {
+            var response = await _skillService.GetSkillByCvId(id);
+            return Ok(response);
+        }
+
         [HttpPost(ApiEndPointConstant.Skill.SkillsEndPoint)]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNewSkill([FromBody] SkillJobInfo request)
