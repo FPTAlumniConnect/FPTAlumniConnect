@@ -14,5 +14,9 @@ namespace FPTAlumniConnect.BusinessTier.Payload.Post
         public int? MajorId { get; set; }
 
         public bool? IsPrivate { get; set; }
+
+        public DateTime? CreatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
     }
 }
