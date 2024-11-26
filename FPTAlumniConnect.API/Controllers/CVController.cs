@@ -3,6 +3,7 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.CV;
+using FPTAlumniConnect.DataTier.Paginate;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -41,7 +42,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.CV.CVsEndPoint)]
-        [ProducesResponseType(typeof(CVReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<CVReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllCV([FromQuery] CVFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _cVService.ViewAllCV(filter, pagingModel);

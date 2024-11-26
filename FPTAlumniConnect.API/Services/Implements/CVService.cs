@@ -94,13 +94,31 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<IPaginate<CVReponse>> ViewAllCV(CVFilter filter, PagingModel pagingModel)
         {
+            // Kiểm tra điều kiện thời gian
+            if (filter.StartAt.HasValue)
+            {
+                if (filter.StartAt.Value > DateTime.UtcNow)
+                {
+                    throw new BadHttpRequestException("StartAt cannot be in the future.");
+                }
+            }
+
+            if (filter.EndAt.HasValue)
+            {
+                if (filter.StartAt.HasValue && filter.EndAt.Value < filter.StartAt.Value)
+                {
+                    throw new BadHttpRequestException("EndAt cannot be earlier than StartAt.");
+                }
+            }
+
+            // Thực hiện truy vấn sau khi kiểm tra hợp lệ
             IPaginate<CVReponse> response = await _unitOfWork.GetRepository<Cv>().GetPagingListAsync(
                 selector: x => _mapper.Map<CVReponse>(x),
                 filter: filter,
                 orderBy: x => x.OrderBy(x => x.CreatedAt),
                 page: pagingModel.page,
                 size: pagingModel.size
-                );
+            );
             return response;
         }
     }

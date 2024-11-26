@@ -17,6 +17,15 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewJobApplication(JobApplicationInfo request)
         {
+            // Check if the user already apply this job
+            JobApplication existingJobApply = await _unitOfWork.GetRepository<JobApplication>().SingleOrDefaultAsync(
+                predicate: s => s.JobPostId == request.JobPostId && s.Cvid == request.Cvid);
+
+            if (existingJobApply != null)
+            {
+                throw new BadHttpRequestException("Bạn đã nộp CV vào đây rồi!");
+            }
+
             JobApplication newJobApplication = _mapper.Map<JobApplication>(request);
             await _unitOfWork.GetRepository<JobApplication>().InsertAsync(newJobApplication);
 
