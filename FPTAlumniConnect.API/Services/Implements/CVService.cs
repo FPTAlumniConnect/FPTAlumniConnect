@@ -19,6 +19,10 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewCV(CVInfo request)
         {
+            Cv cV = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(request.UserId)) ??
+                throw new BadHttpRequestException("UserNotFound");
+
             Cv newCV = _mapper.Map<Cv>(request);
 
             await _unitOfWork.GetRepository<Cv>().InsertAsync(newCV);
