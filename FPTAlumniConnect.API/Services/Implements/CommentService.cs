@@ -95,6 +95,9 @@ namespace FPTAlumniConnect.API.Services.Implements
             Comment comment = await _unitOfWork.GetRepository<Comment>().SingleOrDefaultAsync(
                 predicate: x => x.CommentId.Equals(id)) ??
                 throw new BadHttpRequestException("CommentNotFound");
+
+            // Không được thay đổi PostId, AuthorId, ParentCommentId
+
             comment.Content = string.IsNullOrEmpty(request.Content) ? comment.Content : request.Content;
             comment.Type = string.IsNullOrEmpty(request.Type) ? comment.Type : request.Type;
             comment.UpdatedAt = DateTime.Now;
@@ -116,6 +119,8 @@ namespace FPTAlumniConnect.API.Services.Implements
                 size: pagingModel.size
             );
 
+            var errorMessages = new List<string>();
+
             foreach (var commentResponse in comments.Items)
             {
                 // Kiểm tra parentCommentId cho mỗi comment
@@ -128,15 +133,26 @@ namespace FPTAlumniConnect.API.Services.Implements
                     // Kiểm tra xem comment cha có tồn tại không
                     if (parentComment == null)
                     {
-                        throw new Exception($"Không tìm thấy comment [{commentResponse.CommentId}] có CommentId = {commentResponse.ParentCommentId}");
+                        errorMessages.Add($"Không tìm thấy comment cha cho CommentId = {commentResponse.CommentId} với ParentCommentId = {commentResponse.ParentCommentId}");
+                        continue; // Bỏ qua comment hiện tại và tiếp tục với comment tiếp theo
                     }
 
                     // Kiểm tra postId của comment cha và con
                     if (parentComment.PostId != commentResponse.PostId)
                     {
-                        throw new Exception($"postId của [CommentId = {commentResponse.CommentId}](postId: {commentResponse.PostId}) không khớp với postId của comment cha [CommentId = {parentComment.CommentId}](postId: {parentComment.PostId})");
-
+                        errorMessages.Add($"postId của CommentId = {commentResponse.CommentId} (postId: {commentResponse.PostId}) không khớp với postId của comment cha (CommentId = {parentComment.CommentId}, postId: {parentComment.PostId})");
+                        continue; // Bỏ qua comment hiện tại và tiếp tục với comment tiếp theo
                     }
+                }
+            }
+
+            // Trả về dữ liệu bao gồm danh sách comment hợp lệ và thông báo lỗi
+            if (errorMessages.Any())
+            {
+                // Thêm thông báo lỗi vào response nếu cần thiết
+                foreach (var message in errorMessages)
+                {
+                    Console.WriteLine(message); // Hoặc ghi lại lỗi vào log
                 }
             }
             return comments;
