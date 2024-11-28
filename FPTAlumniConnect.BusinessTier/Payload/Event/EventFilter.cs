@@ -9,6 +9,7 @@ namespace FPTAlumniConnect.BusinessTier.Payload.Event
     public class EventFilter
     {
         public string? EventName { get; set; }
+
         public string? Img { get; set; }
 
         public string? Description { get; set; }
