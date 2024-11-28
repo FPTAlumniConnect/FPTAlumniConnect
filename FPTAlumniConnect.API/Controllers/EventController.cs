@@ -32,7 +32,7 @@ namespace FPTAlumniConnect.API.Controllers
                 return Ok(eventResponse);
             }
             [HttpPut(ApiEndPointConstant.Event.EventEndPoint)]
-            [ProducesResponseType(StatusCodes.Status204NoContent)]
+            [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status404NotFound)]
             public async Task<IActionResult> UpdateEventInfo(int id, [FromBody] EventInfo request)
             {
@@ -42,7 +42,7 @@ namespace FPTAlumniConnect.API.Controllers
                     return NotFound();
                 }
 
-                return NoContent(); 
+                return Ok("UpdateStatusSuccess"); 
             }
 
             [HttpGet(ApiEndPointConstant.Event.EventsEndPoint)]
