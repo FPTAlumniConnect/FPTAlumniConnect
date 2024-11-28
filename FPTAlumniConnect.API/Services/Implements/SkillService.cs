@@ -20,6 +20,13 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewSkill(SkillJobInfo request)
         {
+            SkillJob existingSkillJob = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
+            predicate: s => s.Skill == request.Skill && s.CvID == request.CvID);
+
+            if (existingSkillJob != null)
+            {
+                throw new BadHttpRequestException("Skill already exists.");
+            }
             Cv cv = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(request.CvID)) ??
                 throw new BadHttpRequestException("CvNotFound");
@@ -56,6 +63,14 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateSkillInfo(int id, SkillJobInfo request)
         {
+            SkillJob existingSkillJob = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
+            predicate: s => s.Skill == request.Skill && s.CvID == request.CvID);
+
+            if (existingSkillJob != null)
+            {
+                throw new BadHttpRequestException("Skill already exists.");
+            }
+
             SkillJob skill = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
                 predicate: x => x.SkillJobId.Equals(id)) ??
                 throw new BadHttpRequestException("SkillNotFound");

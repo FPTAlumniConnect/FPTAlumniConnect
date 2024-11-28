@@ -24,7 +24,7 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             if (existingMajorCode != null)
             {
-                throw new BadHttpRequestException("This Major already exists this name.");
+                throw new BadHttpRequestException("SpMajor already exists.");
             }
 
             SpMajorCode newSpMajorCode = _mapper.Map<SpMajorCode>(request);
@@ -57,7 +57,7 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             if (existingMajorCode != null)
             {
-                throw new BadHttpRequestException("This Major already exists!");
+                throw new BadHttpRequestException("SpMajor already exists.");
             }
 
             SpMajorCode spMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(

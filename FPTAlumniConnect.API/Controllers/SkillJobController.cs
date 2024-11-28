@@ -4,6 +4,7 @@ using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.SkillJob;
 using FPTAlumniConnect.API.Services.Implements;
+using FPTAlumniConnect.DataTier.Paginate;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -42,7 +43,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Skill.SkillsEndPoint)]
-        [ProducesResponseType(typeof(SkillJobReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<SkillJobReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllSkill([FromQuery] SkillJobFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _skillService.ViewAllSkill(filter, pagingModel);
