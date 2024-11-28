@@ -3,6 +3,7 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.MajorCode;
+using FPTAlumniConnect.DataTier.Paginate;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -28,12 +29,13 @@ namespace FPTAlumniConnect.API.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNewMajorCode([FromBody] MajorCodeInfo request)
         {
+
             var id = await _majorCodeService.CreateNewMajorCode(request);
             return CreatedAtAction(nameof(GetMajorCodeById), new { id }, id);
         }
 
         [HttpGet(ApiEndPointConstant.MajorCode.MajorCodesEndPoint)]
-        [ProducesResponseType(typeof(MajorCodeReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<MajorCodeReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllMajorCodes([FromQuery] MajorCodeFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _majorCodeService.ViewAllMajorCode(filter, pagingModel);

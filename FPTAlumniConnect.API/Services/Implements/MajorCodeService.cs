@@ -19,6 +19,12 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewMajorCode(MajorCodeInfo request)
         {
+            var existingMajorCode = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+                predicate: x => x.MajorName == request.MajorName);
+            if (existingMajorCode != null)
+            {
+                throw new BadHttpRequestException("Major already exists.");
+            }
             MajorCode newMajorCode = _mapper.Map<MajorCode>(request);
 
             await _unitOfWork.GetRepository<MajorCode>().InsertAsync(newMajorCode);
@@ -31,25 +37,31 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<MajorCodeReponse> GetMajorCodeById(int id)
         {
-            MajorCode post = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+            MajorCode majorCode = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
                 predicate: x => x.MajorId.Equals(id)) ??
                 throw new BadHttpRequestException("MajorCodeNotFound");
 
-            MajorCodeReponse result = _mapper.Map<MajorCodeReponse>(post);
+            MajorCodeReponse result = _mapper.Map<MajorCodeReponse>(majorCode);
             return result;
         }
 
         public async Task<bool> UpdateMajorCodeInfo(int id, MajorCodeInfo request)
         {
-            MajorCode post = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+            var existingMajorCode = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+                predicate: x => x.MajorName == request.MajorName);
+            if (existingMajorCode != null)
+            {
+                throw new BadHttpRequestException("Major already exists.");
+            }
+            MajorCode majorCode = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
                 predicate: x => x.MajorId.Equals(id)) ??
                 throw new BadHttpRequestException("MajorCodeNotFound");
 
-            post.MajorName = string.IsNullOrEmpty(request.MajorName) ? post.MajorName : request.MajorName;
-            post.UpdatedAt = DateTime.Now;
-            post.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+            majorCode.MajorName = string.IsNullOrEmpty(request.MajorName) ? majorCode.MajorName : request.MajorName;
+            majorCode.UpdatedAt = DateTime.Now;
+            majorCode.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
-            _unitOfWork.GetRepository<MajorCode>().UpdateAsync(post);
+            _unitOfWork.GetRepository<MajorCode>().UpdateAsync(majorCode);
             bool isSuccesful = await _unitOfWork.CommitAsync() > 0;
             return isSuccesful;
         }

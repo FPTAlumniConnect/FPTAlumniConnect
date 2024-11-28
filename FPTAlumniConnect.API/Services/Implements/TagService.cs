@@ -25,7 +25,7 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             if (existingTagJob != null)
             {
-                throw new BadHttpRequestException("This CV already exists for the tag.");
+                throw new BadHttpRequestException("Tag already exists.");
             }
 
             var newTag = _mapper.Map<TagJob>(request);
@@ -63,6 +63,14 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateTagInfo(int id, TagJobInfo request)
         {
+            TagJob existingTagJob = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
+            predicate: s => s.Tag == request.Tag && s.CvID == request.CvID);
+
+            if (existingTagJob != null)
+            {
+                throw new BadHttpRequestException("Tag already exists.");
+            }
+
             TagJob tag = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
                 predicate: x => x.TagJobId.Equals(id)) ??
                 throw new BadHttpRequestException("TagNotFound");
