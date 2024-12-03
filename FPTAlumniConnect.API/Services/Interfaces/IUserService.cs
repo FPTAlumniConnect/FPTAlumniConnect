@@ -14,5 +14,7 @@ namespace FPTAlumniConnect.API.Services.Interfaces
         Task<GetUserResponse> GetUserById(int id);
         Task<LoginResponse> LoginUser(LoginFirebaseRequest request);
         Task<LoginResponse> Login(LoginRequest loginRequest);
+        Task<RegisterResponse> Register(RegisterRequest request);
+        Task<LoginResponse> LoginWithGoogle(LoginGoogleRequest request);
     }
 }

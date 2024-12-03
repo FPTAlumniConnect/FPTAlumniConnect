@@ -9,6 +9,7 @@ using FPTAlumniConnect.BusinessTier.Utils;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
+using Google.Apis.Auth;
 using System.Linq.Expressions;
 
 namespace FPTAlumniConnect.API.Services.Implements
@@ -16,11 +17,12 @@ namespace FPTAlumniConnect.API.Services.Implements
     public class UserService : BaseService<UserService>, IUserService
     {
         private readonly IFirebaseService _firebaseService;
-
+        private readonly IConfiguration _configuration;
         public UserService(IUnitOfWork<AlumniConnectContext> unitOfWork, ILogger<UserService> logger, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor, IFirebaseService firebaseService) : base(unitOfWork, logger, mapper, httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IFirebaseService firebaseService, IConfiguration configuration) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _firebaseService = firebaseService;
+            _configuration = configuration;
         }
 
         public async Task<int> CreateNewUser(UserInfo request)
@@ -77,7 +79,7 @@ namespace FPTAlumniConnect.API.Services.Implements
                 {
                     UserId = user.UserId,
                     Email = user.Email,
-                    RoleId=user.RoleId
+                    RoleId = user.RoleId
                 }
             };
             return loginResponse;
@@ -120,6 +122,70 @@ namespace FPTAlumniConnect.API.Services.Implements
                 }
             };
         }
+        public async Task<RegisterResponse> Register(RegisterRequest request)
+        {
+            // Check if email is already registered
+            var existingUser = await _unitOfWork.GetRepository<User>()
+                .SingleOrDefaultAsync(
+                    selector: x => new { x.UserId, x.Email },
+                    predicate: x => x.Email.Equals(request.Email)
+                );
+
+            if (existingUser != null)
+            {
+                throw new BadHttpRequestException("Email already registered.");
+            }
+
+            // Map RegisterRequest to User entity
+            var newUser = _mapper.Map<User>(request);
+
+            // Ensure Code is unique if provided
+            if (!string.IsNullOrEmpty(request.Code))
+            {
+                var existingCode = await _unitOfWork.GetRepository<User>()
+                    .SingleOrDefaultAsync(
+                        selector: x => new { x.UserId, x.Code },
+                        predicate: x => x.Code == request.Code
+                    );
+
+                if (existingCode != null)
+                {
+                    throw new BadHttpRequestException("Code already in use. Please choose another.");
+                }
+
+                newUser.Code = request.Code;
+            }
+
+            // Secure password hashing (Assume HashPassword is a helper method)
+            newUser.PasswordHash = request.Password; // Replace with actual hashing method
+            newUser.CreatedAt = DateTime.UtcNow;
+            newUser.CreatedBy = "System";
+
+            // Insert new user into the database
+            await _unitOfWork.GetRepository<User>().InsertAsync(newUser);
+
+            // Commit transaction
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (!isSuccessful)
+            {
+                throw new BadHttpRequestException("Registration failed. Please try again.");
+            }
+
+            // Create and return the response object
+            var response = new RegisterResponse
+            {
+                UserId = newUser.UserId,
+                Email = newUser.Email,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Code = newUser.Code,
+                CreatedAt = newUser.CreatedAt.Value
+            };
+
+            return response;
+        }
+
 
         public async Task<bool> UpdateUserInfo(int id, UserInfo request)
         {
@@ -164,5 +230,97 @@ namespace FPTAlumniConnect.API.Services.Implements
                 );
             return response;
         }
+        public async Task<GoogleUserResponse> VerifyGoogleTokenAsync(string token)
+        {
+            try
+            {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { _configuration["Google:ClientId"] } // Your Google Client ID
+                });
+
+
+                // Return user information from the payload
+                return new GoogleUserResponse
+                {
+                    Email = payload.Email,
+                    UserId = payload.Subject,
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName
+                };
+            }
+            catch (InvalidJwtException)
+            {
+                return null; // Invalid token
+            }
+        }
+        public async Task<LoginResponse> LoginWithGoogle(LoginGoogleRequest request)
+        {
+            var googleUser = await VerifyGoogleTokenAsync(request.Token);
+
+            if (googleUser == null)
+                throw new BadHttpRequestException("Invalid Google OAuth token");
+
+            var email = googleUser.Email;
+            var uid = googleUser.UserId;
+
+            var existingUser = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+                predicate: x => x.Email.Equals(email)
+            );
+
+            string accessToken;
+            User currentUser;
+
+            if (existingUser != null)
+            {
+                existingUser.GoogleId = uid;
+                _unitOfWork.GetRepository<User>().UpdateAsync(existingUser);
+                accessToken = JwtUtil.GenerateJwtToken(existingUser);
+                await _unitOfWork.CommitAsync();
+                currentUser = existingUser;
+            }
+            else
+            {
+                var newUser = new User
+                {
+                    Email = email,
+                    GoogleId = uid,
+                    FirstName = googleUser.FirstName,
+                    LastName = googleUser.LastName,
+                    CreatedAt = DateTime.UtcNow,
+                    PasswordHash = "Google",
+                    CreatedBy = "System",
+                    RoleId = 2
+                };
+
+                await _unitOfWork.GetRepository<User>().InsertAsync(newUser);
+                bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+                if (!isSuccessful)
+                {
+                    throw new BadHttpRequestException("Registration failed. Please try again.");
+                }
+
+                accessToken = JwtUtil.GenerateJwtToken(newUser);
+                currentUser = newUser; // Assign newUser to currentUser
+            }
+
+            // Return the login response with the access token and user info
+            return new LoginResponse
+            {
+                Message = "Login success",
+                AccessToken = accessToken,
+                UserInfo = new UserResponse
+                {
+                    UserId = currentUser.UserId,
+                    FirstName = currentUser.FirstName,
+                    LastName = currentUser.LastName,
+                    Email = email,
+                    GoogleId = uid
+                }
+            };
+        }
+
+
     }
 }
