@@ -9,5 +9,5 @@ public class ScheduleFilter
 
     public int? MentorId { get; set; }
 
-    public string Status { get; set; } = null!;
+    public string? Status { get; set; }
 }

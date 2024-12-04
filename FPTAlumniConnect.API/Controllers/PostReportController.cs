@@ -3,7 +3,7 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.PostReport;
-using FPTAlumniConnect.API.Services.Implements;
+using FPTAlumniConnect.DataTier.Paginate;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -34,7 +34,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.PostReport.PostReportsEndPoint)]
-        [ProducesResponseType(typeof(PostReportReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<PostReportReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllReport([FromQuery] PostReportFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _postReportService.ViewAllReport(filter, pagingModel);

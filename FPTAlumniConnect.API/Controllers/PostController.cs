@@ -3,6 +3,7 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.Post;
+using FPTAlumniConnect.DataTier.Paginate;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -33,7 +34,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Post.PostsEndPoint)]
-        [ProducesResponseType(typeof(PostReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<PostReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllPost([FromQuery] PostFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _postService.ViewAllPost(filter, pagingModel);
