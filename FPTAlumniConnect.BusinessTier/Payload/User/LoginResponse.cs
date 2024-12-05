@@ -23,4 +23,13 @@ namespace FPTAlumniConnect.BusinessTier.Payload.User
         public string LastName { get; set; } = null!;
 
     }
+    public class RegisterResponse
+    {
+        public int UserId { get; set; }
+        public string? Code { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

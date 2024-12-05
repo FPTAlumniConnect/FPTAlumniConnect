@@ -3,6 +3,7 @@ using FPTAlumniConnect.BusinessTier.Constants;
 using FPTAlumniConnect.BusinessTier.Payload;
 using Microsoft.AspNetCore.Mvc;
 using FPTAlumniConnect.BusinessTier.Payload.Comment;
+using FPTAlumniConnect.DataTier.Paginate;
 
 namespace FPTAlumniConnect.API.Controllers
 {
@@ -33,7 +34,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Comment.CommentsEndPoint)]
-        [ProducesResponseType(typeof(CommentReponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<CommentReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllComment([FromQuery] CommentFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _commentService.ViewAllComment(filter, pagingModel);

@@ -10,6 +10,7 @@ public partial class User
     public string FirstName { get; set; } = null!;
 
     public string LastName { get; set; } = null!;
+    public string? Code { get; set; }
 
     public string Email { get; set; } = null!;
 
