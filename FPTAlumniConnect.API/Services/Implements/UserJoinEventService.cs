@@ -25,12 +25,22 @@ namespace FPTAlumniConnect.API.Services.Implements
                 predicate: x => x.EventId.Equals(request.EventId)) ??
                 throw new BadHttpRequestException("EventNotFound");
 
-            if (GetUserJoinEventById(request.UserId) != null)
+            // Check if user has already joined the event
+            UserJoinEvent alreadyJoined = await _unitOfWork.GetRepository<UserJoinEvent>().SingleOrDefaultAsync(
+                predicate: x => x.UserId == request.UserId && x.EventId == request.EventId);
+            if (alreadyJoined != null)
             {
-                throw new BadHttpRequestException("This user already join!");
+                throw new BadHttpRequestException("UserAlreadyJoinedEvent");
+            }
+
+            // Validate event date and status
+            if (eventId.EndDate < DateTime.UtcNow)
+            {
+                throw new BadHttpRequestException("EventAlreadyEnded");
             }
 
             UserJoinEvent newJoinEvent = _mapper.Map<UserJoinEvent>(request);
+            //newJoinEvent.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
             await _unitOfWork.GetRepository<UserJoinEvent>().InsertAsync(newJoinEvent);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -61,6 +71,7 @@ namespace FPTAlumniConnect.API.Services.Implements
             }
             userJoinEventToUpdate.UpdatedAt = DateTime.Now;
             userJoinEventToUpdate.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+
             _unitOfWork.GetRepository<UserJoinEvent>().UpdateAsync(userJoinEventToUpdate);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
 
