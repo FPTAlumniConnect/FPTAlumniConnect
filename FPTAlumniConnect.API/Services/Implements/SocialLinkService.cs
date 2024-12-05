@@ -5,7 +5,6 @@ using FPTAlumniConnect.BusinessTier.Payload.SocialLink;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
-using static FPTAlumniConnect.BusinessTier.Constants.ApiEndPointConstant;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
@@ -18,10 +17,17 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateSocialLink(SocialLinkInfo request)
         {
+            // Validate User
+            User userId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+                predicate: x => x.UserId.Equals(request.UserId)) ??
+                throw new BadHttpRequestException("UserNotFound");
+
+            // Validate link format and content
+            await ValidateSocialLinkAsync(request.Link);
+
             // Check if the user already has this link
             SoicalLink existingLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
                 predicate: s => s.UserId == request.UserId && s.Link == request.Link);
-
             if (existingLink != null)
             {
                 throw new BadHttpRequestException("This link already exists for the user.");
@@ -29,8 +35,9 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             // Map the request to a new SocialLink entity
             var newSocialLink = _mapper.Map<SoicalLink>(request);
-            newSocialLink.CreatedAt = DateTime.Now;
-            newSocialLink.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+            newSocialLink.CreatedAt = DateTime.UtcNow;
+            newSocialLink.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name
+            /*?? throw new UnauthorizedAccessException("User not authenticated")*/;
 
             // Insert the new link
             await _unitOfWork.GetRepository<SoicalLink>().InsertAsync(newSocialLink);
@@ -38,8 +45,74 @@ namespace FPTAlumniConnect.API.Services.Implements
             // Commit changes
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
-
             return newSocialLink.Slid;
+        }
+
+        private async Task ValidateSocialLinkAsync(string link)
+        {
+            // Kiểm tra null hoặc trống
+            if (string.IsNullOrWhiteSpace(link))
+            {
+                throw new BadHttpRequestException("Link cannot be empty.");
+            }
+
+            // Kiểm tra độ dài link
+            if (link.Length > 500)
+            {
+                throw new BadHttpRequestException("Link is too long. Maximum 500 characters allowed.");
+            }
+
+            // Kiểm tra định dạng URL
+            if (!Uri.TryCreate(link, UriKind.Absolute, out Uri? uriResult))
+            {
+                throw new BadHttpRequestException("Invalid URL format.");
+            }
+
+            // Kiểm tra scheme (chỉ cho phép http và https)
+            if (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps)
+            {
+                throw new BadHttpRequestException("Only HTTP and HTTPS links are allowed.");
+            }
+
+            // Danh sách các domain được phép (tuỳ chọn)
+            string[] allowedDomains = new[]
+            {
+                "facebook.com",
+                "linkedin.com",
+                "twitter.com",
+                "github.com",
+                "instagram.com"
+            };
+
+            bool isDomainAllowed = allowedDomains.Any(domain =>
+                uriResult.Host.Equals(domain, StringComparison.OrdinalIgnoreCase) ||
+                uriResult.Host.EndsWith($".{domain}", StringComparison.OrdinalIgnoreCase));
+
+            if (!isDomainAllowed)
+            {
+                throw new BadHttpRequestException("This social media platform is not supported.");
+            }
+
+            // Kiểm tra kết nối URL (tuỳ chọn, có thể gây chậm)
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, link));
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new BadHttpRequestException("Unable to verify the link.");
+                    }
+                }
+            }
+            catch
+            {
+                // Tuỳ chọn: bỏ qua lỗi kết nối hoặc log lại
+                // Nếu muốn chắc chắn, có thể throw exception
+                throw new BadHttpRequestException("Error when create new link");
+            }
         }
 
         public async Task<GetSocialLinkResponse> GetSocialLinkById(int id)
@@ -54,6 +127,10 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateSocialLink(int id, SocialLinkInfo request)
         {
+            SoicalLink socialLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
+                predicate: x => x.Slid.Equals(id)) ??
+                throw new BadHttpRequestException("SocialLinkNotFound");
+
             // Check if the user already has this link
             SoicalLink existingLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
                 predicate: s => s.UserId == request.UserId && s.Link == request.Link);
@@ -63,14 +140,14 @@ namespace FPTAlumniConnect.API.Services.Implements
                 throw new BadHttpRequestException("This link already exists!");
             }
 
-            SoicalLink socialLink = await _unitOfWork.GetRepository<SoicalLink>().SingleOrDefaultAsync(
-                predicate: x => x.Slid.Equals(id)) ??
-                throw new BadHttpRequestException("SocialLinkNotFound");
-
             //socialLink.UserId = request.UserId ?? socialLink.UserId;  // Tại sao lại cho thay đổi ???
+            // Validate link format and content
+            await ValidateSocialLinkAsync(request.Link);
+
             socialLink.Link = request.Link ?? socialLink.Link;
             socialLink.UpdatedAt = DateTime.Now;
-            socialLink.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
+            socialLink.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name
+            /*?? throw new UnauthorizedAccessException("User not authenticated")*/;
 
             _unitOfWork.GetRepository<SoicalLink>().UpdateAsync(socialLink);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

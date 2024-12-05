@@ -48,12 +48,12 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUserJoinEvent(int id, [FromBody] UserJoinEventInfo request)
         {
             await _userJoinEventService.UpdateUserJoinEvent(id, request);
-            return NoContent();
+            return Ok("UpdateStatusSuccess");
         }
     }
 }

@@ -13,15 +13,17 @@ namespace FPTAlumniConnect.BusinessTier.Payload.JobPost
 
         public int? MaxSalary { get; set; }
 
+        public bool? IsDeal { get; set; }
+
         public string? Location { get; set; }
 
         public string? Status { get; set; }
 
         public DateTime? Time { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        //public DateTime? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        //public DateTime? UpdatedAt { get; set; }
     }
 
 }

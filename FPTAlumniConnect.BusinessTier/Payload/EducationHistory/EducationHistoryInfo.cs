@@ -8,6 +8,6 @@ namespace FPTAlumniConnect.BusinessTier.Payload.EducationHistory
 
         public string Name { get; set; } = null!;
 
-        public DateTime ReceivedAt { get; set; }
+        public DateTime? ReceivedAt { get; set; }
     }
 }
