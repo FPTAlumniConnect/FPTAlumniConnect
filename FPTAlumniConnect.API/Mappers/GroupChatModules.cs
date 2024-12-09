@@ -8,7 +8,8 @@ namespace FPTAlumniConnect.API.Mappers
     {
         public GroupChatModules() 
         { 
-            CreateMap<GroupChat, GroupChatInfo>();
+            CreateMap<GroupChat, GroupChatReponse>();
+            CreateMap<GroupChatInfo, GroupChat>();
         }
     }
 }

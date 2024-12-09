@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FPTAlumniConnect.API.Services.Implements.FPTAlumniConnect.API.Services.Implements;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.Post;
@@ -10,15 +11,40 @@ namespace FPTAlumniConnect.API.Services.Implements
 {
     public class PostService : BaseService<PostService>, IPostService
     {
+        private readonly IMajorCodeService _majorCodeService;
+        private readonly IUserService _userService;
 
-        public PostService(IUnitOfWork<AlumniConnectContext> unitOfWork, ILogger<PostService> logger, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public PostService(
+            IUnitOfWork<AlumniConnectContext> unitOfWork, 
+            ILogger<PostService> logger, 
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            IMajorCodeService majorCodeService,
+            IUserService userService) : 
+            base(unitOfWork, logger, mapper, httpContextAccessor)
         {
-
+            _majorCodeService = majorCodeService;
+            _userService = userService;
         }
 
         public async Task<int> CreateNewPost(PostInfo request)
         {
+            // Check MajorId
+            MajorCode checkMajorId = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+            predicate: s => s.MajorId == request.MajorId);
+            if (checkMajorId == null)
+            {
+                throw new BadHttpRequestException("MajorIdNotFound");
+            }
+
+            // Check AuthorId
+            User checkAuthorId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.AuthorId);
+            if (checkAuthorId == null)
+            {
+                throw new BadHttpRequestException("AuthorIdNotFound");
+            }
+
             Post newPost = _mapper.Map<Post>(request);
 
             await _unitOfWork.GetRepository<Post>().InsertAsync(newPost);
@@ -44,6 +70,22 @@ namespace FPTAlumniConnect.API.Services.Implements
             Post post = await _unitOfWork.GetRepository<Post>().SingleOrDefaultAsync(
                 predicate: x => x.PostId.Equals(id)) ??
                 throw new BadHttpRequestException("PostNotFound");
+
+            // Check MajorId
+            MajorCode checkMajorId = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+            predicate: s => s.MajorId == request.MajorId);
+            if (checkMajorId == null)
+            {
+                throw new BadHttpRequestException("MajorIdNotFound");
+            }
+
+            // Check AuthorId
+            User checkAuthorId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.AuthorId);
+            if (checkAuthorId == null)
+            {
+                throw new BadHttpRequestException("AuthorIdNotFound");
+            }
 
             post.Title = string.IsNullOrEmpty(request.Title) ? post.Title : request.Title;
             post.Content = string.IsNullOrEmpty(request.Content) ? post.Content : request.Content;

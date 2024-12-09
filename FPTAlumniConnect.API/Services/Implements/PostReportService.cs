@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
-using FPTAlumniConnect.BusinessTier.Payload.Post;
 using FPTAlumniConnect.BusinessTier.Payload.PostReport;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
@@ -20,6 +19,22 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewReport(PostReportInfo request)
         {
+            // Check PostId
+            Post checkPostId = await _unitOfWork.GetRepository<Post>().SingleOrDefaultAsync(
+            predicate: s => s.PostId == request.PostId);
+            if (checkPostId == null)
+            {
+                throw new BadHttpRequestException("PostIdNotFound");
+            }
+
+            // Check UserId
+            User checkUserId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.UserId);
+            if (checkUserId == null)
+            {
+                throw new BadHttpRequestException("UserIdNotFound");
+            }
+
             PostReport newRp = _mapper.Map<PostReport>(request);
 
             await _unitOfWork.GetRepository<PostReport>().InsertAsync(newRp);
@@ -35,6 +50,22 @@ namespace FPTAlumniConnect.API.Services.Implements
             PostReport rp = await _unitOfWork.GetRepository<PostReport>().SingleOrDefaultAsync(
                 predicate: x => x.PostId.Equals(id)) ??
                 throw new BadHttpRequestException("ReportNotFound");
+
+            // Check PostId
+            Post checkPostId = await _unitOfWork.GetRepository<Post>().SingleOrDefaultAsync(
+            predicate: s => s.PostId == request.PostId);
+            if (checkPostId == null)
+            {
+                throw new BadHttpRequestException("PostIdNotFound");
+            }
+
+            // Check UserId
+            User checkAuthorId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.UserId);
+            if (checkAuthorId == null)
+            {
+                throw new BadHttpRequestException("UserIdNotFound");
+            }
 
             rp.TypeOfReport = string.IsNullOrEmpty(request.TypeOfReport) ? rp.TypeOfReport : request.TypeOfReport;
             rp.UpdatedAt = DateTime.Now;

@@ -2,7 +2,6 @@
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.SkillJob;
-using FPTAlumniConnect.BusinessTier.Payload.TagJob;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
@@ -20,16 +19,20 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewSkill(SkillJobInfo request)
         {
+            // Check CvId
+            Cv checkCvId = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+            predicate: s => s.Id == request.CvID);
+            if (checkCvId == null)
+            {
+                throw new BadHttpRequestException("CvIdNotFound");
+            }
+
             SkillJob existingSkillJob = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
             predicate: s => s.Skill == request.Skill && s.CvID == request.CvID);
-
             if (existingSkillJob != null)
             {
                 throw new BadHttpRequestException("Skill already exists.");
             }
-            Cv cv = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(request.CvID)) ??
-                throw new BadHttpRequestException("CvNotFound");
 
             SkillJob newSkill = _mapper.Map<SkillJob>(request);
 
@@ -63,17 +66,24 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateSkillInfo(int id, SkillJobInfo request)
         {
+            SkillJob skill = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
+                predicate: x => x.SkillJobId.Equals(id)) ??
+                throw new BadHttpRequestException("SkillNotFound");
+
+            // Check CvId
+            Cv checkCvId = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+            predicate: s => s.Id == request.CvID);
+            if (checkCvId == null)
+            {
+                throw new BadHttpRequestException("CvIdNotFound");
+            }
+
             SkillJob existingSkillJob = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
             predicate: s => s.Skill == request.Skill && s.CvID == request.CvID);
-
             if (existingSkillJob != null)
             {
                 throw new BadHttpRequestException("Skill already exists.");
             }
-
-            SkillJob skill = await _unitOfWork.GetRepository<SkillJob>().SingleOrDefaultAsync(
-                predicate: x => x.SkillJobId.Equals(id)) ??
-                throw new BadHttpRequestException("SkillNotFound");
 
             skill.Skill = string.IsNullOrEmpty(request.Skill) ? skill.Skill : request.Skill;
             skill.UpdatedAt = DateTime.Now;

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FPTAlumniConnect.API.Services.Implements.FPTAlumniConnect.API.Services.Implements;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.Comment;
@@ -43,6 +42,11 @@ namespace FPTAlumniConnect.API.Services.Implements
             var post = await _postService.GetPostById(request.PostId);
             if (post == null || post.AuthorId == null)
                 throw new BadHttpRequestException("find post failed");
+
+            //find user
+            var user = await _userService.GetUserById(request.AuthorId);
+            if (user == null)
+            throw new BadHttpRequestException("find user failed");
 
             //Prepare notifcation
             var commenter = await _userService.GetUserById(request.AuthorId);

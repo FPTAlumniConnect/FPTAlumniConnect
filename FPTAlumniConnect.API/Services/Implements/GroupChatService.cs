@@ -29,12 +29,12 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             return newGroupChat.Id;
         }
-        public async Task<GroupChatInfo> GetGroupChatById(int id)
+        public async Task<GroupChatReponse> GetGroupChatById(int id)
         {
             GroupChat groupChat = await _unitOfWork.GetRepository<GroupChat>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id)) ?? throw new BadHttpRequestException("GroupChatNotFound");
 
-            return _mapper.Map<GroupChatInfo>(groupChat);
+            return _mapper.Map<GroupChatReponse>(groupChat);
         }
 
         public async Task<bool> UpdateGroupChat(int id, GroupChatInfo request)
@@ -50,10 +50,10 @@ namespace FPTAlumniConnect.API.Services.Implements
 
             return isSuccessful;
         }
-        public async Task<IPaginate<GroupChatInfo>> ViewAllMessagesInGroupChat(GroupChatFilter filter, PagingModel pagingModel)
+        public async Task<IPaginate<GroupChatReponse>> ViewAllMessagesInGroupChat(GroupChatFilter filter, PagingModel pagingModel)
         {
-            IPaginate<GroupChatInfo> response = await _unitOfWork.GetRepository<GroupChat>().GetPagingListAsync(
-                selector: x => _mapper.Map<GroupChatInfo>(x),
+            IPaginate<GroupChatReponse> response = await _unitOfWork.GetRepository<GroupChat>().GetPagingListAsync(
+                selector: x => _mapper.Map<GroupChatReponse>(x),
                 filter: filter,
                 orderBy: x => x.OrderBy(x => x.Id),
                 page: pagingModel.page,

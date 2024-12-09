@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
-using FPTAlumniConnect.BusinessTier.Payload.Post;
 using FPTAlumniConnect.BusinessTier.Payload.SpMajorCode;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
@@ -18,14 +17,23 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewSpMajorCode(SpMajorCodeInfo request)
         {
-            // Check if Major already has this name
-            SpMajorCode existingMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
-                predicate: s => s.MajorId == request.MajorId && s.MajorName == request.MajorName);
+            // Check MajorId
+            MajorCode checkMajorId = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+            predicate: s => s.MajorId == request.MajorId);
+            if (checkMajorId == null)
+            {
+                throw new BadHttpRequestException("MajorIdNotFound");
+            }
 
-            if (existingMajorCode != null)
+            // Check if Major already has this name
+            SpMajorCode existingSpMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
+                predicate: s => s.MajorName == request.MajorName);
+
+            if (existingSpMajorCode != null)
             {
                 throw new BadHttpRequestException("SpMajor already exists.");
             }
+
 
             SpMajorCode newSpMajorCode = _mapper.Map<SpMajorCode>(request);
             newSpMajorCode.CreatedAt = DateTime.Now;
@@ -51,18 +59,26 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateSpMajorCodeInfo(int id, SpMajorCodeInfo request)
         {
-            // Check if Major already has this name
+            SpMajorCode spMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
+                predicate: x => x.SpMajorId.Equals(id)) ??
+                throw new BadHttpRequestException("SpMajorCodeNotFound");
+
+            // Check MajorId
+            MajorCode checkMajorId = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
+            predicate: s => s.MajorId == request.MajorId);
+            if (checkMajorId == null)
+            {
+                throw new BadHttpRequestException("MajorIdNotFound");
+            }
+
+            // Check if SpMajor already has this name
             SpMajorCode existingMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
-                predicate: s => s.MajorId == request.MajorId && s.MajorName == request.MajorName);
+                predicate: s => s.MajorName == request.MajorName);
 
             if (existingMajorCode != null)
             {
                 throw new BadHttpRequestException("SpMajor already exists.");
             }
-
-            SpMajorCode spMajorCode = await _unitOfWork.GetRepository<SpMajorCode>().SingleOrDefaultAsync(
-                predicate: x => x.SpMajorId.Equals(id)) ??
-                throw new BadHttpRequestException("SpMajorCodeNotFound");
 
             spMajorCode.MajorId = request.MajorId;
             spMajorCode.MajorName = string.IsNullOrEmpty(request.MajorName) ? spMajorCode.MajorName : request.MajorName;
