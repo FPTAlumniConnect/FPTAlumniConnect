@@ -5,7 +5,7 @@ namespace FPTAlumniConnect.BusinessTier.Payload.Mentorship;
 
 public class MentorshipInfo
 {
-    public int? AumniId { get; set; }
+    public int? AlumniId { get; set; }
 
     public string? RequestMessage { get; set; }
 

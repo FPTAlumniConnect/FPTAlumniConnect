@@ -19,6 +19,14 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewMentorship(MentorshipInfo request)
         {
+            // Check AlumniId
+            User checkAlumniId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.AlumniId && s.RoleId == 2);
+            if (checkAlumniId == null)
+            {
+                throw new BadHttpRequestException("AlumniIdNotFound");
+            }
+
             Mentorship newMentorship = _mapper.Map<Mentorship>(request);
 
             await _unitOfWork.GetRepository<Mentorship>().InsertAsync(newMentorship);
@@ -44,6 +52,14 @@ namespace FPTAlumniConnect.API.Services.Implements
             Mentorship mentorship = await _unitOfWork.GetRepository<Mentorship>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id)) ??
                 throw new BadHttpRequestException("MentorshipNotFound");
+
+            // Check AlumniId
+            User checkAlumniId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.AlumniId && s.RoleId == 2);
+            if (checkAlumniId == null)
+            {
+                throw new BadHttpRequestException("AlumniIdNotFound");
+            }
 
             mentorship.RequestMessage = string.IsNullOrEmpty(request.RequestMessage) ? mentorship.RequestMessage : request.RequestMessage;
             mentorship.Type = string.IsNullOrEmpty(request.Type) ? mentorship.Type : request.Type;
