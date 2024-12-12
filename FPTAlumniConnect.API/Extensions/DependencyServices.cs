@@ -69,8 +69,9 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IMessageGroupChatService, MessageGroupChatService>();
             services.AddScoped<IGroupChatService, GroupChatService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IPerspectiveService, PerspectiveService>();
 
-        
+
             return services;
         }
 

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FPTAlumniConnect.API.Services.Implements.FPTAlumniConnect.API.Services.Implements;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.Comment;
@@ -15,6 +14,7 @@ namespace FPTAlumniConnect.API.Services.Implements
         private readonly IPostService _postService;
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
+        private readonly IPerspectiveService _perspectiveService;
 
         public CommentService(
             IUnitOfWork<AlumniConnectContext> unitOfWork,
@@ -23,31 +23,42 @@ namespace FPTAlumniConnect.API.Services.Implements
             IHttpContextAccessor httpContextAccessor,
             IPostService postService,
             INotificationService notificationService,
+            IPerspectiveService perspectiveService,
             IUserService userService)
             : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _postService = postService;
             _notificationService = notificationService;
             _userService = userService;
+            _perspectiveService = perspectiveService;
         }
 
         public async Task<int> CreateNewComment(CommentInfo request)
         {
+            // Validate input
             ValidateCommentInfo(request);
+
+            // Kiểm tra nội dung bình luận
+            if (!await _perspectiveService.IsContentAppropriate(request.Content))
+            {
+                throw new BadHttpRequestException("Bình luận chứa nội dung không phù hợp.");
+            }
+
+            // Map to entity and save comment
             Comment newComment = _mapper.Map<Comment>(request);
             await _unitOfWork.GetRepository<Comment>().InsertAsync(newComment);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
 
-            //find post
+            // Find post
             var post = await _postService.GetPostById(request.PostId);
             if (post == null || post.AuthorId == null)
                 throw new BadHttpRequestException("find post failed");
 
-            //Prepare notifcation
+            // Prepare notification
             var commenter = await _userService.GetUserById(request.AuthorId);
             if (commenter == null)
-                throw new BadHttpRequestException("prepare notificattion failed");
+                throw new BadHttpRequestException("prepare notification failed");
             var notificationPayload = new NotificationPayload
             {
                 UserId = post.AuthorId.Value, // Tác giả bài viết
@@ -55,7 +66,7 @@ namespace FPTAlumniConnect.API.Services.Implements
                 IsRead = false
             };
 
-            //send notification
+            // Send notification
             await _notificationService.SendNotificationAsync(notificationPayload);
 
             return newComment.CommentId;
