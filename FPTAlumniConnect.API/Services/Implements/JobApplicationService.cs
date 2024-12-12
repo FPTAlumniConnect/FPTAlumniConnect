@@ -17,6 +17,14 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewJobApplication(JobApplicationInfo request)
         {
+            JobPost jobpostId = await _unitOfWork.GetRepository<JobPost>().SingleOrDefaultAsync(
+                predicate: x => x.JobPostId.Equals(request.JobPostId)) ??
+                throw new BadHttpRequestException("JobPostNotFound");
+
+            Cv cvId = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(request.Cvid)) ??
+                throw new BadHttpRequestException("CVNotFound");
+
             // Check if the user already apply this job
             JobApplication existingJobApply = await _unitOfWork.GetRepository<JobApplication>().SingleOrDefaultAsync(
                 predicate: s => s.JobPostId == request.JobPostId && s.Cvid == request.Cvid);
@@ -51,11 +59,32 @@ namespace FPTAlumniConnect.API.Services.Implements
                 predicate: x => x.ApplicationId.Equals(id)) ??
                 throw new BadHttpRequestException("JobApplicationNotFound");
 
-            jobApplication.JobPostId = request.JobPostId;
-            jobApplication.Cvid = request.Cvid;
-            jobApplication.LetterCover = request.LetterCover;
-            jobApplication.Status = request.Status;
-            jobApplication.Type = request.Type;
+            // Validate and update Job Post (if provided)
+            if (request.JobPostId > 0)
+            {
+                JobPost jobpostId = await _unitOfWork.GetRepository<JobPost>().SingleOrDefaultAsync(
+                    predicate: x => x.JobPostId.Equals(request.JobPostId)) ??
+                    throw new BadHttpRequestException("JobPostNotFound");
+                jobApplication.JobPostId = request.JobPostId;
+            }
+
+            // Validate and update CV (if provided)
+            if (request.Cvid > 0)
+            {
+                Cv cvId = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(request.Cvid)) ??
+                    throw new BadHttpRequestException("CVNotFound");
+                jobApplication.Cvid = request.Cvid;
+            }
+
+            jobApplication.LetterCover = string.IsNullOrEmpty(request.LetterCover) ? jobApplication.LetterCover : request.LetterCover;
+            jobApplication.Status = string.IsNullOrEmpty(request.Status) ? jobApplication.Status : request.Status;
+            jobApplication.Type = string.IsNullOrEmpty(request.Type) ? jobApplication.Type : request.Type;
+
+            // Additional validation for specific fields if needed
+            if (!string.IsNullOrEmpty(jobApplication.LetterCover) && jobApplication.LetterCover.Length > 2000)
+                throw new BadHttpRequestException("Letter cover cannot exceed 2000 characters.");
+
             jobApplication.UpdatedAt = DateTime.Now;
             jobApplication.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
