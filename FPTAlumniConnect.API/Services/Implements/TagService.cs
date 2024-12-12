@@ -19,7 +19,15 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewTag(TagJobInfo request)
         {
-            // Check if the user already has this link
+            // Check CvId
+            Cv checkCvId = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+            predicate: s => s.Id == request.CvID);
+            if (checkCvId == null)
+            {
+                throw new BadHttpRequestException("CvIdNotFound");
+            }
+
+            // Check if the user already has this tag
             TagJob existingTagJob = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
                 predicate: s => s.Tag == request.Tag && s.CvID == request.CvID);
 
@@ -63,17 +71,25 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<bool> UpdateTagInfo(int id, TagJobInfo request)
         {
-            TagJob existingTagJob = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
-            predicate: s => s.Tag == request.Tag && s.CvID == request.CvID);
+            TagJob tag = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
+            predicate: x => x.TagJobId.Equals(id)) ??
+            throw new BadHttpRequestException("TagNotFound");
 
+            // Check CvId
+            Cv checkCvId = await _unitOfWork.GetRepository<Cv>().SingleOrDefaultAsync(
+            predicate: s => s.Id == request.CvID);
+            if (checkCvId == null)
+            {
+                throw new BadHttpRequestException("CvIdNotFound");
+            }
+
+            // Check if the user already has this tag
+            TagJob existingTagJob = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
+                predicate: s => s.Tag == request.Tag && s.CvID == request.CvID);
             if (existingTagJob != null)
             {
                 throw new BadHttpRequestException("Tag already exists.");
             }
-
-            TagJob tag = await _unitOfWork.GetRepository<TagJob>().SingleOrDefaultAsync(
-                predicate: x => x.TagJobId.Equals(id)) ??
-                throw new BadHttpRequestException("TagNotFound");
 
             tag.Tag = string.IsNullOrEmpty(request.Tag) ? tag.Tag : request.Tag;
             tag.UpdatedAt = DateTime.Now;

@@ -5,7 +5,6 @@ using FPTAlumniConnect.BusinessTier.Payload.MessageGroupChat;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
@@ -19,11 +18,19 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateMessageGroupChat(MessageGroupChatInfo request)
         {
+            // Check MemberId
+            User checkMemberId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.MemberId);
+            if (checkMemberId == null)
+            {
+                throw new BadHttpRequestException("MemberIdNotFound");
+            }
+
             MessageGroupChat newMessage = _mapper.Map<MessageGroupChat>(request);
             await _unitOfWork.GetRepository<MessageGroupChat>().InsertAsync(newMessage);
 
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            if (!isSuccessful) throw new BadHttpRequestException("Failed to create message group chat");
+            if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
 
             return newMessage.Id;
         }
@@ -32,7 +39,7 @@ namespace FPTAlumniConnect.API.Services.Implements
         {
             MessageGroupChat messageGroupChat = await _unitOfWork.GetRepository<MessageGroupChat>()
                 .SingleOrDefaultAsync(predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException("Message group chat not found");
+                ?? throw new BadHttpRequestException("MessageGroupChatNotFound");
 
             return _mapper.Map<MessageGroupChatInfo>(messageGroupChat);
         }
@@ -41,7 +48,15 @@ namespace FPTAlumniConnect.API.Services.Implements
         {
             MessageGroupChat messageToUpdate = await _unitOfWork.GetRepository<MessageGroupChat>()
                 .SingleOrDefaultAsync(predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException("Message group chat not found");
+                ?? throw new BadHttpRequestException("MessageGroupChatNotFound");
+
+            // Check MemberId
+            User checkMemberId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            predicate: s => s.UserId == request.MemberId);
+            if (checkMemberId == null)
+            {
+                throw new BadHttpRequestException("MemberIdNotFound");
+            }
 
             messageToUpdate.Content = string.IsNullOrEmpty(request.Content) ? messageToUpdate.Content : request.Content;
             messageToUpdate.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;

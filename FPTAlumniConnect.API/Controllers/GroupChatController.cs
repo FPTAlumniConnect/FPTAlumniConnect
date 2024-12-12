@@ -27,7 +27,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.GroupChat.GroupChatEndPoint)]
-        [ProducesResponseType(typeof(GroupChatInfo), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(GroupChatReponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetGroupChatById(int id)
         {
@@ -50,7 +50,7 @@ namespace FPTAlumniConnect.API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.GroupChat.GroupChatsEndPoint)]
-        [ProducesResponseType(typeof(IPaginate<GroupChatInfo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<GroupChatReponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ViewAllGroupChats([FromQuery] GroupChatFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var groupChats = await _groupChatService.ViewAllMessagesInGroupChat(filter, pagingModel);

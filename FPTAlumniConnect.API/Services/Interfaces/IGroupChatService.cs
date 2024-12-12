@@ -7,8 +7,8 @@ namespace FPTAlumniConnect.API.Services.Interfaces
     public interface IGroupChatService
     {
         Task<int> CreateGroupChat(GroupChatInfo request);
-        Task<GroupChatInfo> GetGroupChatById(int id);
+        Task<GroupChatReponse> GetGroupChatById(int id);
         Task<bool> UpdateGroupChat(int id, GroupChatInfo request);
-        Task<IPaginate<GroupChatInfo>> ViewAllMessagesInGroupChat(GroupChatFilter filter, PagingModel pagingModel);
+        Task<IPaginate<GroupChatReponse>> ViewAllMessagesInGroupChat(GroupChatFilter filter, PagingModel pagingModel);
     }
 }

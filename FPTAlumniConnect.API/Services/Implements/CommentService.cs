@@ -55,7 +55,12 @@ namespace FPTAlumniConnect.API.Services.Implements
             if (post == null || post.AuthorId == null)
                 throw new BadHttpRequestException("find post failed");
 
-            // Prepare notification
+            //find user
+            var user = await _userService.GetUserById(request.AuthorId);
+            if (user == null)
+            throw new BadHttpRequestException("find user failed");
+
+            //Prepare notifcation
             var commenter = await _userService.GetUserById(request.AuthorId);
             if (commenter == null)
                 throw new BadHttpRequestException("prepare notification failed");
