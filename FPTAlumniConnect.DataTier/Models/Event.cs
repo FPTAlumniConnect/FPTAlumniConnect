@@ -30,4 +30,5 @@ public partial class Event
     public int? OrganizerId { get; set; }
     public virtual User? Organizer { get; set; }
     public virtual ICollection<UserJoinEvent> UserJoinEvents { get; set; } = new List<UserJoinEvent>();
+    public virtual ICollection<EventTimeLine> EventTimeLines { get; set; } = new List<EventTimeLine>();
 }

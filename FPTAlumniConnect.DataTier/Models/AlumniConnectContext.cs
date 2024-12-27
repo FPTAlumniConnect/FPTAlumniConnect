@@ -107,7 +107,7 @@ public partial class AlumniConnectContext : DbContext
                   .HasDefaultValueSql("GETDATE()");
             entity.Property(e => e.IsRead)
                   .HasDefaultValue(false);
-        }); 
+        });
         modelBuilder.Entity<Cv>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__CV__3214EC07F4EB68AB");
@@ -195,14 +195,19 @@ public partial class AlumniConnectContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.Status)
-    .HasDefaultValue(false); 
+    .HasDefaultValue(false);
 
             entity.HasOne(d => d.Organizer).WithMany(p => p.Events)
                 .HasForeignKey(d => d.OrganizerId)
                 .HasConstraintName("FK__Events__Organize__02084FDA");
-
+            entity.HasMany(e => e.EventTimeLines).WithOne(et => et.Event).HasForeignKey(et => et.EventId).OnDelete(DeleteBehavior.Cascade);
         });
-
+        modelBuilder.Entity<EventTimeLine>(entity =>
+        {
+            entity.HasKey(e => e.EventTimeLineId);
+            entity.Property(e => e.EndTime).HasColumnType("time");
+            entity.Property(e => e.StartTime).HasColumnType("time");
+        });
 
         modelBuilder.Entity<GroupChat>(entity =>
         {
@@ -654,7 +659,7 @@ public partial class AlumniConnectContext : DbContext
             entity.HasOne(d => d.Cv).WithMany(p => p.SkillJobs)
                 .HasForeignKey(d => d.CvID);
         });
-
+       
         OnModelCreatingPartial(modelBuilder);
     }
 
