@@ -70,6 +70,7 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IGroupChatService, GroupChatService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IPerspectiveService, PerspectiveService>();
+            services.AddScoped<ITimeLineService, TimeLineService>();
 
 
             return services;
