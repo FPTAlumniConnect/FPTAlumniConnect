@@ -14,7 +14,7 @@ namespace FPTAlumniConnect.API.Services.Implements
     {
 
         public EventService(IUnitOfWork<AlumniConnectContext> unitOfWork, ILogger<EventService> logger, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor, IFirebaseService firebaseService) : base(unitOfWork, logger, mapper, httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
 
         }
@@ -98,38 +98,38 @@ namespace FPTAlumniConnect.API.Services.Implements
                 eventToUpdate.OrganizerId = request.OrganizerId.Value;
             }
 
-            //// Validate tên sự kiện
-            //if (!string.IsNullOrWhiteSpace(request.EventName))
-            //{
-            //    // Kiểm tra độ dài tên sự kiện
-            //    if (request.EventName.Length < 3 || request.EventName.Length > 100)
-            //    {
-            //        throw new BadHttpRequestException("Event name must be between 3 and 100 characters.");
-            //    }
-            //    eventToUpdate.EventName = request.EventName;
-            //}
+            // Validate tên sự kiện
+            if (!string.IsNullOrWhiteSpace(request.EventName))
+            {
+                // Kiểm tra độ dài tên sự kiện
+                if (request.EventName.Length < 3 || request.EventName.Length > 100)
+                {
+                    throw new BadHttpRequestException("Event name must be between 3 and 100 characters.");
+                }
+                eventToUpdate.EventName = request.EventName;
+            }
 
-            //// Validate mô tả
-            //if (!string.IsNullOrWhiteSpace(request.Description))
-            //{
-            //    // Kiểm tra độ dài mô tả
-            //    if (request.Description.Length > 1000)
-            //    {
-            //        throw new BadHttpRequestException("Description cannot exceed 1000 characters.");
-            //    }
-            //    eventToUpdate.Description = request.Description;
-            //}
+            // Validate mô tả
+            if (!string.IsNullOrWhiteSpace(request.Description))
+            {
+                // Kiểm tra độ dài mô tả
+                if (request.Description.Length > 1000)
+                {
+                    throw new BadHttpRequestException("Description cannot exceed 1000 characters.");
+                }
+                eventToUpdate.Description = request.Description;
+            }
 
-            //// Validate địa điểm
-            //if (!string.IsNullOrWhiteSpace(request.Location))
-            //{
-            //    // Kiểm tra độ dài địa điểm
-            //    if (request.Location.Length > 200)
-            //    {
-            //        throw new BadHttpRequestException("Location cannot exceed 200 characters.");
-            //    }
-            //    eventToUpdate.Location = request.Location;
-            //}
+            // Validate địa điểm
+            if (!string.IsNullOrWhiteSpace(request.Location))
+            {
+                // Kiểm tra độ dài địa điểm
+                if (request.Location.Length > 200)
+                {
+                    throw new BadHttpRequestException("Location cannot exceed 200 characters.");
+                }
+                eventToUpdate.Location = request.Location;
+            }
 
             eventToUpdate.StartDate = request.StartDate ?? eventToUpdate.StartDate;
             eventToUpdate.EndDate = request.EndDate ?? eventToUpdate.EndDate;

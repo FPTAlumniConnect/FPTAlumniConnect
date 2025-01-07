@@ -15,6 +15,7 @@ namespace FPTAlumniConnect.BusinessTier.Payload.User
         public string Email { get; set; } = null!;
 
         public bool IsMentor { get; set; }
+        public string? ProfilePicture { get; set; }
 
     }
 }

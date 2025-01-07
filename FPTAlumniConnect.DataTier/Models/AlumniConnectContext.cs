@@ -60,7 +60,10 @@ public partial class AlumniConnectContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserJoinEvent> UserJoinEvents { get; set; }
+    public DbSet<WorkExperience> WorkExperiences { get; set; }
+    public DbSet<Education> Educations { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public virtual DbSet<EventTimeLine> EventTimeLines { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=(local);Database=AlumniConnect;Integrated Security=True;TrustServerCertificate=True;");
 
@@ -193,6 +196,7 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Img).HasColumnType("TEXT");
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.Status)
     .HasDefaultValue(false);
@@ -200,14 +204,9 @@ public partial class AlumniConnectContext : DbContext
             entity.HasOne(d => d.Organizer).WithMany(p => p.Events)
                 .HasForeignKey(d => d.OrganizerId)
                 .HasConstraintName("FK__Events__Organize__02084FDA");
-            entity.HasMany(e => e.EventTimeLines).WithOne(et => et.Event).HasForeignKey(et => et.EventId).OnDelete(DeleteBehavior.Cascade);
+
         });
-        modelBuilder.Entity<EventTimeLine>(entity =>
-        {
-            entity.HasKey(e => e.EventTimeLineId);
-            entity.Property(e => e.EndTime).HasColumnType("time");
-            entity.Property(e => e.StartTime).HasColumnType("time");
-        });
+
 
         modelBuilder.Entity<GroupChat>(entity =>
         {
@@ -573,6 +572,9 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.EmailVerified).HasDefaultValueSql("((0))");
             entity.Property(e => e.FirstName).HasMaxLength(255);
+            entity.Property(e => e.Code)
+                .HasMaxLength(20)
+                .IsRequired(false);
             entity.Property(e => e.GoogleId).HasColumnName("GoogleID");
             entity.Property(e => e.IsMentor)
                 .HasDefaultValueSql("((0))")
@@ -582,6 +584,8 @@ public partial class AlumniConnectContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.ProfilePicture)
+             .HasColumnType("text");
             entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
             entity.HasOne(d => d.Major).WithMany(p => p.Users)
@@ -659,7 +663,7 @@ public partial class AlumniConnectContext : DbContext
             entity.HasOne(d => d.Cv).WithMany(p => p.SkillJobs)
                 .HasForeignKey(d => d.CvID);
         });
-       
+
         OnModelCreatingPartial(modelBuilder);
     }
 

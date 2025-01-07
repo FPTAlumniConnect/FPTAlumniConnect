@@ -10,18 +10,20 @@ using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
 using Google.Apis.Auth;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
     public class UserService : BaseService<UserService>, IUserService
     {
-        private readonly IFirebaseService _firebaseService;
+        //private readonly IFirebaseService _firebaseService;
         private readonly IConfiguration _configuration;
         public UserService(IUnitOfWork<AlumniConnectContext> unitOfWork, ILogger<UserService> logger, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor, IFirebaseService firebaseService, IConfiguration configuration) : base(unitOfWork, logger, mapper, httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
-            _firebaseService = firebaseService;
+            //_firebaseService = firebaseService;
             _configuration = configuration;
         }
 
@@ -45,8 +47,9 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<GetUserResponse> GetUserById(int id)
         {
+            Func<IQueryable<User>, IIncludableQueryable<User, object>> include = q => q.Include(u => u.Role).Include(u => u.Major);
             User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
-                predicate: x => x.UserId.Equals(id)) ??
+                predicate: x => x.UserId.Equals(id), include: include) ??
                 throw new BadHttpRequestException("UserNotFound");
 
             GetUserResponse result = _mapper.Map<GetUserResponse>(user);
@@ -54,12 +57,18 @@ namespace FPTAlumniConnect.API.Services.Implements
         }
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
+            // Predicate to filter by email and password
             Expression<Func<User, bool>> searchFilter = p =>
                 p.Email.Equals(loginRequest.Email) &&
                 p.PasswordHash.Equals(loginRequest.Password);
 
+            // Include related Role entity while fetching User
+            Func<IQueryable<User>, IIncludableQueryable<User, object>> include = q => q.Include(u => u.Role);
+
+            // Fetch User with related Role
             User user = await _unitOfWork.GetRepository<User>()
-                .SingleOrDefaultAsync(predicate: searchFilter);
+                .SingleOrDefaultAsync(predicate: searchFilter, include: include);
+
             if (user == null)
             {
                 return new LoginResponse
@@ -69,8 +78,11 @@ namespace FPTAlumniConnect.API.Services.Implements
                     UserInfo = null
                 };
             }
+
+            // Generate the JWT token
             var token = JwtUtil.GenerateJwtToken(user);
 
+            // Prepare the login response
             LoginResponse loginResponse = new LoginResponse()
             {
                 Message = "Login success",
@@ -79,49 +91,51 @@ namespace FPTAlumniConnect.API.Services.Implements
                 {
                     UserId = user.UserId,
                     Email = user.Email,
-                    RoleId = user.RoleId
+                    RoleId = user.RoleId,  // Get RoleId directly from User
+                    RoleName = user.Role?.Name ?? "No Role Assigned"  // Safely access Role.Name
                 }
             };
+
             return loginResponse;
         }
 
-        public async Task<LoginResponse> LoginUser(LoginFirebaseRequest request)
-        {
-            var cred = await _firebaseService.VerifyIdToken(request.Token);
-            if (cred == null) throw new BadHttpRequestException("Firebase token không hợp lệ");
-            var firebaseClaims = cred.Claims;
+        //public async Task<LoginResponse> LoginUser(LoginFirebaseRequest request)
+        //{
+        //    var cred = await _firebaseService.VerifyIdToken(request.Token);
+        //    if (cred == null) throw new BadHttpRequestException("Firebase token không hợp lệ");
+        //    var firebaseClaims = cred.Claims;
 
-            var email = firebaseClaims.FirstOrDefault(c => c.Key == "email").Value.ToString();
-            var uid = firebaseClaims.FirstOrDefault(c => c.Key == "user_id").Value.ToString();
+        //    var email = firebaseClaims.FirstOrDefault(c => c.Key == "email").Value.ToString();
+        //    var uid = firebaseClaims.FirstOrDefault(c => c.Key == "user_id").Value.ToString();
 
-            User userLogin = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
-                predicate: x => x.Email.Equals(email)
-                );
+        //    User userLogin = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+        //        predicate: x => x.Email.Equals(email)
+        //        );
 
-            string accessToken;
-            if (userLogin != null)
-            {
-                userLogin.GoogleId = uid;
-                _unitOfWork.GetRepository<User>().UpdateAsync(userLogin);
-                accessToken = JwtUtil.GenerateJwtToken(userLogin);
-                await _unitOfWork.CommitAsync();
-            }
-            else throw new BadHttpRequestException("UserNotFound");
+        //    string accessToken;
+        //    if (userLogin != null)
+        //    {
+        //        userLogin.GoogleId = uid;
+        //        _unitOfWork.GetRepository<User>().UpdateAsync(userLogin);
+        //        accessToken = JwtUtil.GenerateJwtToken(userLogin);
+        //        await _unitOfWork.CommitAsync();
+        //    }
+        //    else throw new BadHttpRequestException("UserNotFound");
 
-            return new LoginResponse
-            {
-                Message = "Login success",
-                AccessToken = accessToken,
-                UserInfo = new UserResponse()
-                {
-                    UserId = userLogin.UserId,
-                    FirstName = userLogin.FirstName,
-                    LastName = userLogin.LastName,
-                    Email = userLogin.Email,
-                    GoogleId = userLogin.GoogleId,
-                }
-            };
-        }
+        //    return new LoginResponse
+        //    {
+        //        Message = "Login success",
+        //        AccessToken = accessToken,
+        //        UserInfo = new UserResponse()
+        //        {
+        //            UserId = userLogin.UserId,
+        //            FirstName = userLogin.FirstName,
+        //            LastName = userLogin.LastName,
+        //            Email = userLogin.Email,
+        //            GoogleId = userLogin.GoogleId,
+        //        }
+        //    };
+        //}
         public async Task<RegisterResponse> Register(RegisterRequest request)
         {
             // Check if email is already registered
@@ -195,18 +209,18 @@ namespace FPTAlumniConnect.API.Services.Implements
                 throw new BadHttpRequestException("UserNotFound");
 
             // Check if the logged-in user is an admin or staff
-            var loggedInUserRole = _httpContextAccessor.HttpContext?.User.FindFirst("Role")?.Value; // Assuming Role is stored as a claim
-            if (loggedInUserRole != null && (loggedInUserRole == "admin" || loggedInUserRole == "staff"))
-            {
-                user.IsMentor = request.IsMentor;
+            //var loggedInUserRole = _httpContextAccessor.HttpContext?.User.FindFirst("Role")?.Value; // Assuming Role is stored as a claim
+            //if (loggedInUserRole != null && (loggedInUserRole == "admin" || loggedInUserRole == "staff"))
+            //{
+            //    user.IsMentor = request.IsMentor;
 
-            }
+            //}
 
             // Update other fields
             user.FirstName = string.IsNullOrEmpty(request.FirstName) ? user.FirstName : request.FirstName;
             user.Email = string.IsNullOrEmpty(request.Email) ? user.Email : request.Email;
             user.LastName = string.IsNullOrEmpty(request.LastName) ? user.LastName : request.LastName;
-
+            user.ProfilePicture = string.IsNullOrEmpty(request.ProfilePicture) ? user.ProfilePicture : request.ProfilePicture;
             user.UpdatedAt = DateTime.Now;
             user.UpdatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
@@ -221,15 +235,23 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<IPaginate<GetUserResponse>> ViewAllUser(UserFilter filter, PagingModel pagingModel)
         {
+            // Define include to include the Role entity
+            Func<IQueryable<User>, IIncludableQueryable<User, object>> include = q => q.Include(u => u.Role).Include(u => u.Major);
+
+            // Call GetPagingListAsync with a selector, include, and other parameters
             IPaginate<GetUserResponse> response = await _unitOfWork.GetRepository<User>().GetPagingListAsync(
                 selector: x => _mapper.Map<GetUserResponse>(x),
                 filter: filter,
-                orderBy: x => x.OrderBy(x => x.Email),
+                orderBy: x => x.OrderBy(u => u.Email),
+                include: include,
                 page: pagingModel.page,
                 size: pagingModel.size
-                );
+            );
+
             return response;
         }
+
+
         public async Task<GoogleUserResponse> VerifyGoogleTokenAsync(string token)
         {
             try

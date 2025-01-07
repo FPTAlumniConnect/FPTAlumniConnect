@@ -18,8 +18,8 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         {
             public const string AuthenticationEndpoint = ApiEndpoint + "/auth";
             public const string Login = AuthenticationEndpoint + "/login";
-            public const string GoogleLogin = AuthenticationEndpoint + "/login-google";
             public const string Register = AuthenticationEndpoint + "/register";
+            public const string GoogleLogin = AuthenticationEndpoint + "/login-google";
         }
         public static class User
         {
@@ -72,7 +72,7 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         }
         public static class Event
         {
-            public const string EventsEndPoint = ApiEndpoint + "/events"; 
+            public const string EventsEndPoint = ApiEndpoint + "/events";
             public const string EventEndPoint = EventsEndPoint + "/{id}";
         }
         public static class UserJoinEvent
@@ -123,8 +123,8 @@ namespace FPTAlumniConnect.BusinessTier.Constants
         }
         public static class MessageGroupChat
         {
-            public const string MessagesEndPoint = ApiEndpoint + "/messages-group-chat"; 
-            public const string MessageEndPoint = MessagesEndPoint + "/{id}"; 
+            public const string MessagesEndPoint = ApiEndpoint + "/messages-group-chat";
+            public const string MessageEndPoint = MessagesEndPoint + "/{id}";
         }
         public static class GroupChat
         {
@@ -136,10 +136,23 @@ namespace FPTAlumniConnect.BusinessTier.Constants
             public const string PhoBertEndpoint = ApiEndpoint + "/phobert";
             public const string FindBestMatchingCVEndpoint = PhoBertEndpoint + "/find-best-matching-cv";
         }
+        public static class Education
+        {
+            public const string EducationsEndPoint = ApiEndpoint + "/educations";
+            public const string EducationEndPoint = EducationsEndPoint + "/{id}";
+            public const string EducationUserEndPoint = EducationsEndPoint + "/user/{id}";
+        }
+
+        public static class WorkExperience
+        {
+            public const string WorkExperiencesEndPoint = ApiEndpoint + "/work-experiences";
+            public const string WorkExperienceEndPoint = WorkExperiencesEndPoint + "/{id}";
+            public const string WorkExperienceUserEndPoint = WorkExperiencesEndPoint + "/user/{id}";
+        }
         public static class TimeLine
         {
-            public const string TimeLineEndPoint = "timeLine/{id}";
-            public const string TimeLinesEndPoint = "timeLines";
+            public const string TimeLinesEndPoint = "timelines";
+            public const string TimeLineEndPoint = "timelines/{id}";
         }
     }
 }
