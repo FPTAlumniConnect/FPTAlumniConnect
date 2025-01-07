@@ -8,7 +8,8 @@ namespace FPTAlumniConnect.API.Mappers
     {
         public PostModule()
         {
-            CreateMap<Post, PostReponse>();
+            CreateMap<Post, PostReponse>()
+                         .ForMember(dest => dest.MajorName, opt => opt.MapFrom(src => src.Major.MajorName)); ;
             CreateMap<PostInfo, Post>();
         }
     }

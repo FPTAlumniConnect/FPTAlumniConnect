@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 
 namespace FPTAlumniConnect.DataTier.Models;
-
 public partial class User
 {
     public int UserId { get; set; }
+    public string? Code { get; set; }
 
     public string FirstName { get; set; } = null!;
 
     public string LastName { get; set; } = null!;
-    public string? Code { get; set; }
 
     public string Email { get; set; } = null!;
 
@@ -69,4 +68,7 @@ public partial class User
     public virtual ICollection<SoicalLink> SoicalLinks { get; set; } = new List<SoicalLink>();
 
     public virtual ICollection<UserJoinEvent> UserJoinEvents { get; set; } = new List<UserJoinEvent>();
+    // New relationships for WorkExperience and Education
+    public virtual ICollection<WorkExperience> WorkExperiences { get; set; } = new List<WorkExperience>();
+    public virtual ICollection<Education> EducationRecords { get; set; } = new List<Education>();
 }

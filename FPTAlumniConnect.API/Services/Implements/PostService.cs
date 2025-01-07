@@ -1,50 +1,26 @@
 ﻿using AutoMapper;
-using FPTAlumniConnect.API.Services.Implements.FPTAlumniConnect.API.Services.Implements;
 using FPTAlumniConnect.API.Services.Interfaces;
 using FPTAlumniConnect.BusinessTier.Payload;
 using FPTAlumniConnect.BusinessTier.Payload.Post;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
     public class PostService : BaseService<PostService>, IPostService
     {
-        private readonly IMajorCodeService _majorCodeService;
-        private readonly IUserService _userService;
 
-        public PostService(
-            IUnitOfWork<AlumniConnectContext> unitOfWork, 
-            ILogger<PostService> logger, 
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor,
-            IMajorCodeService majorCodeService,
-            IUserService userService) : 
-            base(unitOfWork, logger, mapper, httpContextAccessor)
+        public PostService(IUnitOfWork<AlumniConnectContext> unitOfWork, ILogger<PostService> logger, IMapper mapper,
+            IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
-            _majorCodeService = majorCodeService;
-            _userService = userService;
+
         }
 
         public async Task<int> CreateNewPost(PostInfo request)
         {
-            // Check MajorId
-            MajorCode checkMajorId = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
-            predicate: s => s.MajorId == request.MajorId);
-            if (checkMajorId == null)
-            {
-                throw new BadHttpRequestException("MajorIdNotFound");
-            }
-
-            // Check AuthorId
-            User checkAuthorId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
-            predicate: s => s.UserId == request.AuthorId);
-            if (checkAuthorId == null)
-            {
-                throw new BadHttpRequestException("AuthorIdNotFound");
-            }
-
             Post newPost = _mapper.Map<Post>(request);
 
             await _unitOfWork.GetRepository<Post>().InsertAsync(newPost);
@@ -57,8 +33,10 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<PostReponse> GetPostById(int id)
         {
+            Func<IQueryable<Post>, IIncludableQueryable<Post, object>> include = q => q.Include(u => u.Major);
+
             Post post = await _unitOfWork.GetRepository<Post>().SingleOrDefaultAsync(
-                predicate: x => x.PostId.Equals(id)) ??
+                predicate: x => x.PostId.Equals(id), include: include) ??
                 throw new BadHttpRequestException("PostNotFound");
 
             PostReponse result = _mapper.Map<PostReponse>(post);
@@ -70,22 +48,6 @@ namespace FPTAlumniConnect.API.Services.Implements
             Post post = await _unitOfWork.GetRepository<Post>().SingleOrDefaultAsync(
                 predicate: x => x.PostId.Equals(id)) ??
                 throw new BadHttpRequestException("PostNotFound");
-
-            // Check MajorId
-            MajorCode checkMajorId = await _unitOfWork.GetRepository<MajorCode>().SingleOrDefaultAsync(
-            predicate: s => s.MajorId == request.MajorId);
-            if (checkMajorId == null)
-            {
-                throw new BadHttpRequestException("MajorIdNotFound");
-            }
-
-            // Check AuthorId
-            User checkAuthorId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
-            predicate: s => s.UserId == request.AuthorId);
-            if (checkAuthorId == null)
-            {
-                throw new BadHttpRequestException("AuthorIdNotFound");
-            }
 
             post.Title = string.IsNullOrEmpty(request.Title) ? post.Title : request.Title;
             post.Content = string.IsNullOrEmpty(request.Content) ? post.Content : request.Content;
@@ -111,9 +73,12 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<IPaginate<PostReponse>> ViewAllPost(PostFilter filter, PagingModel pagingModel)
         {
+            Func<IQueryable<Post>, IIncludableQueryable<Post, object>> include = q => q.Include(u => u.Major);
+
             IPaginate<PostReponse> response = await _unitOfWork.GetRepository<Post>().GetPagingListAsync(
                 selector: x => _mapper.Map<PostReponse>(x),
                 filter: filter,
+                include: include,
                 orderBy: x => x.OrderBy(x => x.CreatedAt),
                 page: pagingModel.page,
                 size: pagingModel.size

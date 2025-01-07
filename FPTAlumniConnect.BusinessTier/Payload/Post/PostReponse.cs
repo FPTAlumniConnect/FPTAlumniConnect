@@ -16,6 +16,7 @@ namespace FPTAlumniConnect.BusinessTier.Payload.Post
         public int? Views { get; set; }
 
         public int? MajorId { get; set; }
+        public string? MajorName { get; set; }
 
         public string Status { get; set; } = null!;
 

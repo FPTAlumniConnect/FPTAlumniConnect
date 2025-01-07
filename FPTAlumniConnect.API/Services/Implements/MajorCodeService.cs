@@ -5,6 +5,8 @@ using FPTAlumniConnect.BusinessTier.Payload.MajorCode;
 using FPTAlumniConnect.DataTier.Models;
 using FPTAlumniConnect.DataTier.Paginate;
 using FPTAlumniConnect.DataTier.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore;
 
 namespace FPTAlumniConnect.API.Services.Implements
 {
@@ -68,6 +70,8 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<IPaginate<MajorCodeReponse>> ViewAllMajorCode(MajorCodeFilter filter, PagingModel pagingModel)
         {
+
+
             IPaginate<MajorCodeReponse> response = await _unitOfWork.GetRepository<MajorCode>().GetPagingListAsync(
                 selector: x => _mapper.Map<MajorCodeReponse>(x),
                 filter: filter,

@@ -32,6 +32,7 @@ namespace FPTAlumniConnect.BusinessTier.Payload.JobPost
         public int? UserId { get; set; }
 
         public int? MajorId { get; set; }
+        public string? MajorName { get; set; }
 
         public DateTime? CreatedAt { get; set; }
 
