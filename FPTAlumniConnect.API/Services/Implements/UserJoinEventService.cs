@@ -17,14 +17,23 @@ namespace FPTAlumniConnect.API.Services.Implements
 
         public async Task<int> CreateNewUserJoinEvent(UserJoinEventInfo request)
         {
-            User userId = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            // Fetch user by UserId
+            User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
                 predicate: x => x.UserId.Equals(request.UserId)) ??
                 throw new BadHttpRequestException("UserNotFound");
 
-            Event eventId = await _unitOfWork.GetRepository<Event>().SingleOrDefaultAsync(
+            // Fetch event by EventId
+            Event eventDetails = await _unitOfWork.GetRepository<Event>().SingleOrDefaultAsync(
                 predicate: x => x.EventId.Equals(request.EventId)) ??
                 throw new BadHttpRequestException("EventNotFound");
-
+            // Check if the user has already joined the event
+            bool userHasJoinedEvent = await _unitOfWork.GetRepository<UserJoinEvent>().AnyAsync(
+                x => x.UserId.Equals(request.UserId) && x.EventId.Equals(request.EventId));
+            if (userHasJoinedEvent)
+            {
+                throw new BadHttpRequestException("This user already joined this event!");
+            }
+            // Map to UserJoinEvent and insert new join event
             // Check if user has already joined the event
             UserJoinEvent alreadyJoined = await _unitOfWork.GetRepository<UserJoinEvent>().SingleOrDefaultAsync(
                 predicate: x => x.UserId == request.UserId && x.EventId == request.EventId);
@@ -33,19 +42,16 @@ namespace FPTAlumniConnect.API.Services.Implements
                 throw new BadHttpRequestException("UserAlreadyJoinedEvent");
             }
 
-            // Validate event date and status
-            if (eventId.EndDate < DateTime.UtcNow)
-            {
-                throw new BadHttpRequestException("EventAlreadyEnded");
-            }
-
             UserJoinEvent newJoinEvent = _mapper.Map<UserJoinEvent>(request);
             //newJoinEvent.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
             await _unitOfWork.GetRepository<UserJoinEvent>().InsertAsync(newJoinEvent);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
 
-            if (!isSuccessful) throw new BadHttpRequestException("CreateFailed");
+            if (!isSuccessful)
+            {
+                throw new BadHttpRequestException("CreateFailed");
+            }
 
             return newJoinEvent.Id;
         }

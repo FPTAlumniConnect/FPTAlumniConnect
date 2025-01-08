@@ -72,7 +72,7 @@ namespace FPTAlumniConnect.API.Extensions
             services.AddScoped<IEducationService, EducationService>();
             services.AddScoped<IWorkExperienceService, WorkExperienceService>();
             services.AddScoped<IPerspectiveService, PerspectiveService>();
-
+            services.AddScoped<IPhoBertService, PhoBertService>();
             return services;
         }
 

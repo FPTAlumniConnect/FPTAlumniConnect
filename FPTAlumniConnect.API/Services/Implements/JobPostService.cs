@@ -71,7 +71,7 @@ namespace FPTAlumniConnect.API.Services.Implements
                 selector: x => _mapper.Map<JobPostResponse>(x),
                 filter: filter,
                 include: include,
-                orderBy: x => x.OrderBy(x => x.CreatedAt),
+                orderBy: x => x.OrderByDescending(x => x.CreatedAt),
                 page: pagingModel.page,
                 size: pagingModel.size
                 );

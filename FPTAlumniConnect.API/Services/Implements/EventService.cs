@@ -165,7 +165,7 @@ namespace FPTAlumniConnect.API.Services.Implements
             IPaginate<GetEventResponse> response = await _unitOfWork.GetRepository<Event>().GetPagingListAsync(
                 selector: x => _mapper.Map<GetEventResponse>(x),
                 predicate: predicate,
-                orderBy: x => x.OrderBy(x => x.EventId),
+                orderBy: x => x.OrderByDescending(x => x.EndDate),
                 page: pagingModel.page,
                 size: pagingModel.size
             );

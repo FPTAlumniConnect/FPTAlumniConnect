@@ -171,6 +171,10 @@ namespace FPTAlumniConnect.DataTier.Repository.Implement
         {
             return await _dbContext.Set<T>().ToListAsync();
         }
-       
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AnyAsync(predicate);
+        }
+
     }
 }
